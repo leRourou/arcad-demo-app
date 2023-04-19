@@ -1,8 +1,27 @@
 @import url('https://fonts.googleapis.com/css?family=Quicksand');
 
-body {
+* {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
   --font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 1em;
+  padding: 5px;
+}
+
+h1 {
+  font-size: 1.2em;
+}
+
+html, body, .navbar, #root {
+  padding: 0px;
+}
+
+#view {
+  padding: 0 5% 0 5%;
+}
+
+.not-found-view, .building-view {
+  text-align: center;
+  padding-top: 50px;
 }
