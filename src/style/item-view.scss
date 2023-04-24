@@ -5,15 +5,45 @@ h1 {
     margin: 0.67em 0;
 }
 
+
+#modify-view {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
 .modify-field {
     width: 100%;
     height: 40px;
-    border: 2.5px solid $primary-color;
-    border-radius: 25px;
+    border-style: none;
+    border-bottom: 2.5px solid $primary-color;
     padding: 0 20px;
     box-sizing: border-box;
-    margin-bottom: 10px;
-    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-top: 2px;
+    transition: 0.3s ease;
+}
+
+.modify-textarea {
+    width: 100%;
+    height: 40px;
+    border-style: none;
+    border-bottom: 2.5px solid $primary-color;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+    margin-top: 2px;
+    transition: 0.3s ease;
+    resize: vertical;
+    max-height: 150px;
+    min-height: 50px;
 }
 
 .field-label {
@@ -24,14 +54,16 @@ h1 {
 }
 
 .fields {
-    display: inline-table;
     width: 90%;
+    column-gap: 50px;
+    column-width: 100px;
+    column-count: 2;
 }
 
 .info-icon {
-    width: 15px;
-    height: 15px;
-    padding-top: 10px;
+    width: 12px;
+    height: 12px;
+    padding-left: 5px;
 }
 
 #modify-container {
@@ -44,20 +76,6 @@ h1 {
     justify-content: center;
     align-items: center;
     z-index: 2;
-}
-
-
-#modify-view {
-    width: 30%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0px;
-    padding: 0px;
-    background-color: #fff;
-    border-radius: 10%;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 #save-button {
@@ -81,15 +99,17 @@ h1 {
 }
 
 .modify-field:invalid,
-.modify-field:placeholder-shown {
-    border: 2.5px solid $invalid-color;
+.modify-field:placeholder-shown,
+.invalid-field {
+    border-bottom: 2.5px solid $invalid-color;
+    background-color: rgba($invalid-color, .1)
 }
 
 .modify-select {
     width: 100%;
     height: 40px;
     border: 2.5px solid $primary-color;
-    background-color: #fff;
+    background-color: rgb($primary-color, 0.1);
     padding: 0 20px 0 20px;
     box-sizing: border-box;
     margin-bottom: 10px;
@@ -98,33 +118,25 @@ h1 {
 }
 
 .tippy-box[data-theme~='tooltip-field'] {
-    background-color: $primary-color;
+    background-color: $gray;
     color: #fff;
     padding: 0;
+    padding-bottom: 5px;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='top']>.tippy-arrow::before {
-    border-top-color: $primary-color;
+    border-top-color: $gray;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='bottom']>.tippy-arrow::before {
-    border-bottom-color: $primary-color;
+    border-bottom-color: $gray;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='left']>.tippy-arrow::before {
-    border-left-color: $primary-color;
+    border-left-color: $gray;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='right']>.tippy-arrow::before {
-    border-right-color: $primary-color;
+    border-right-color: $gray;
 }
 
-#black-back {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #0000002e;
-    position: absolute;
-    z-index: -1;
-}

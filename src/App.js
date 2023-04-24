@@ -1,20 +1,20 @@
-import Products from "./views/ProductsView";
-import Product from "./views/ProductView";
-import NotFound from "./views/NotFoundView";
-import Building from "./views/Building";
 import React from "react";
+import NotFound from "./views/misc/notFoundView.js";
+import Building from "./views/misc/buildingView";
+import Articles from "./controllers/articlesController.js";
+import Customers from "./controllers/customersController.js";
+import Orders from "./controllers/ordersController.js";
 import { Route, Routes } from "react-router-dom";
 
-function App(props) {
-
+function App() {
   return (
     <Routes>
-      <Route path="/products" element={<Products/>}/>
-      <Route path="/" element={<Building/>}/>
-      <Route path="/about" element={<Building/>}/>
-      <Route path="/customers" element={<Building/>}/>
-      <Route path="/commands" element={<Building/>}/>
-      <Route path="*" element={<NotFound/>}/>
+      <Route path="/articles" element={<Articles />} />
+      <Route path="/" element={<Building />} />
+      <Route path="/about" element={<Building />} />
+      <Route path="/customers" element={<Customers />} />
+      <Route path="/orders" element={<Orders />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

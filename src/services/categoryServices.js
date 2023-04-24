@@ -1,3 +1,4 @@
+
 // Get All Categories
 export function getAllCategories() {
     return fetch('http://localhost:3000/api/categories.json')

@@ -1,4 +1,6 @@
 import React from "react";
+import '../../style/404-building.scss'
+
 
 export default function Building() {
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
@@ -10,18 +10,18 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const routes = [
   { name: "Home", link: "/" },
-  { name: "Products", link: "/products" },
+  { name: "Orders", link: "/orders" },
+  { name: "Articles", link: "/articles" },
   { name: "Customers", link: "/customers" },
-  { name: "Orders", link: "/commands" },
-  { name: "About", link: "/about" },
+  { name: "About", link: "/about" }
 ];
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <NavBar routes={routes}/>
-      <App/>
-    </BrowserRouter>
+      <BrowserRouter>
+        <NavBar routes={routes}/>
+        <App/>
+      </BrowserRouter>
   </React.StrictMode>
 );
 

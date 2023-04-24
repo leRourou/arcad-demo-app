@@ -1,101 +1,608 @@
 [
-    { "id": 1, "Product": "Chair", "Price": 50, "Category": "Furniture", "Description": "A comfortable chair with a modern design.", "Quantity": 10, "DeliveryTime": "2-3 days" },
-    { "id": 2, "Product": "Table", "Price": 100, "Category": "Furniture", "Description": "A sturdy table with a minimalist look.", "Quantity": 5, "DeliveryTime": "3-5 days" },
-    { "id": 3, "Product": "Basket", "Price": 499.99, "Category": "Clothes", "Description": "A designer basket made from high-quality materials.", "Quantity": 3, "DeliveryTime": "1-2 weeks" },
-    { "id": 4, "Product": "Pull", "Price": 200, "Category": "Clothes", "Description": "A cozy and stylish pull for any occasion.", "Quantity": 8, "DeliveryTime": "2-4 days" },
-    { "id": 5, "Product": "Hammer", "Price": 69.99, "Category": "Tools" },
-    { "id": 6, "Product": "Screwdriver", "Price": 19.99, "Category": "Tools" },
-    { "id": 7, "Product": "Saw", "Price": 99.99, "Category": "Tools" },
-    { "id": 8, "Product": "Bed", "Price": 499, "Category": "Furniture" },
-    { "id": 9, "Product": "Couch", "Price": 799, "Category": "Furniture" },
-    { "id": 10, "Product": "Dresser", "Price": 299, "Category": "Furniture" },
-    { "id": 11, "Product": "Shirt", "Price": 39.99, "Category": "Clothes" },
-    { "id": 12, "Product": "Jeans", "Price": 59.99, "Category": "Clothes" },
-    { "id": 13, "Product": "Blouse", "Price": 49.99, "Category": "Clothes" },
-    { "id": 14, "Product": "Jacket", "Price": 99.99, "Category": "Clothes" },
-    { "id": 15, "Product": "Drill", "Price": 149.99, "Category": "Tools" },
-    { "id": 16, "Product": "Circular Saw", "Price": 249.99, "Category": "Tools" },
-    { "id": 17, "Product": "Wrench Set", "Price": 69.99, "Category": "Tools" },
-    { "id": 18, "Product": "Desk", "Price": 199.99, "Category": "Furniture" },
-    { "id": 19, "Product": "Dining Table", "Price": 399.99, "Category": "Furniture" },
-    { "id": 20, "Product": "Rocking Chair", "Price": 149.99, "Category": "Furniture" },
-    { "id": 21, "Product": "T-Shirt", "Price": 19.99, "Category": "Clothes" },
-    { "id": 22, "Product": "Shorts", "Price": 29.99, "Category": "Clothes" },
-    { "id": 23, "Product": "Skirt", "Price": 39.99, "Category": "Clothes" },
-    { "id": 24, "Product": "Dress", "Price": 69.99, "Category": "Clothes" },
-    { "id": 25, "Product": "Chainsaw", "Price": 349.99, "Category": "Tools" },
-    { "id": 26, "Product": "Hedge Trimmer", "Price": 99.99, "Category": "Tools" },
-    { "id": 27, "Product": "Leaf Blower", "Price": 149.99, "Category": "Tools" },
-    { "id": 28, "Product": "Nightstand", "Price": 49.99, "Category": "Furniture" },
-    { "id": 29, "Product": "Bookshelf", "Price": 149.99, "Category": "Furniture" },
-    { "id": 30, "Product": "Sofa", "Price": 799, "Category": "Furniture" },
-    { "id": 31, "Product": "Dining Chair", "Price": 79.99, "Category": "Furniture" },
-    { "id": 32, "Product": "Dress Shoes", "Price": 99.99, "Category": "Clothes" },
-    { "id": 33, "Product": "Sneakers", "Price": 59.99, "Category": "Clothes" },
-    { "id": 34, "Product": "Boots", "Price": 129.99, "Category": "Clothes" },
-    { "id": 35, "Product": "Winter Coat", "Price": 199.99, "Category": "Clothes" },
-    { "id": 36, "Product": "Lawn Mower", "Price": 349.99, "Category": "Tools" },
-    { "id": 37, "Product": "Power Drill", "Price": 129.99, "Category": "Tools" },
-    { "id": 38, "Product": "Angle Grinder", "Price": 79.99, "Category": "Tools" },
-    { "id": 39, "Product": "Paint Sprayer", "Price": 199.99, "Category": "Tools" },
-    { "id": 40, "Product": "Armchair", "Price": 299.99, "Category": "Furniture" },
-    { "id": 41, "Product": "Coffee Table", "Price": 149.99, "Category": "Furniture" },
-    { "id": 42, "Product": "Cabinet", "Price": 399.99, "Category": "Furniture" },
-    { "id": 43, "Product": "Lamp", "Price": 29.99, "Category": "Furniture" },
-    { "id": 44, "Product": "Tuxedo", "Price": 299.99, "Category": "Clothes" },
-    { "id": 45, "Product": "Dress Shoes", "Price": 149.99, "Category": "Clothes" },
-    { "id": 46, "Product": "Jeans", "Price": 79.99, "Category": "Clothes" },
-    { "id": 47, "Product": "Trench Coat", "Price": 149.99, "Category": "Clothes" },
-    { "id": 48, "Product": "Drill Press", "Price": 499.99, "Category": "Tools" },
-    { "id": 49, "Product": "Jigsaw", "Price": 129.99, "Category": "Tools" },
-    { "id": 50, "Product": "Circular Saw", "Price": 99.99, "Category": "Tools" },
-    { "id": 51, "Product": "Dresser", "Price": 149.99, "Category": "Furniture" },
-    { "id": 52, "Product": "Desk Chair", "Price": 99.99, "Category": "Furniture" },
-    { "id": 53, "Product": "Sectional", "Price": 999, "Category": "Furniture" },
-    { "id": 54, "Product": "Recliner", "Price": 399.99, "Category": "Furniture" },
-    { "id": 55, "Product": "Armchair", "Price": 199.99, "Category": "Furniture" },
-    { "id": 56, "Product": "Coffee Table", "Price": 99.99, "Category": "Furniture" },
-    { "id": 57, "Product": "Bookcase", "Price": 249.99, "Category": "Furniture" },
-    { "id": 58, "Product": "Table Lamp", "Price": 29.99, "Category": "Furniture" },
-    { "id": 59, "Product": "T-Shirt", "Price": 14.99, "Category": "Clothes" },
-    { "id": 60, "Product": "Hoodie", "Price": 39.99, "Category": "Clothes" },
-    { "id": 61, "Product": "Sweatpants", "Price": 29.99, "Category": "Clothes" },
-    { "id": 62, "Product": "Dress Shoes", "Price": 129.99, "Category": "Clothes" },
-    { "id": 63, "Product": "Tennis Shoes", "Price": 79.99, "Category": "Clothes" },
-    { "id": 64, "Product": "Winter Boots", "Price": 99.99, "Category": "Clothes" },
-    { "id": 65, "Product": "Winter Jacket", "Price": 149.99, "Category": "Clothes" },
-    { "id": 66, "Product": "Circular Saw", "Price": 149.99, "Category": "Tools" },
-    { "id": 67, "Product": "Table Saw", "Price": 699.99, "Category": "Tools" },
-    { "id": 68, "Product": "Cordless Drill", "Price": 99.99, "Category": "Tools" },
-    { "id": 69, "Product": "Air Compressor", "Price": 299.99, "Category": "Tools" },
-    { "id": 70, "Product": "Accent Chair", "Price": 149.99, "Category": "Furniture" },
-    { "id": 71, "Product": "Side Table", "Price": 49.99, "Category": "Furniture" },
-    { "id": 72, "Product": "TV Stand", "Price": 199.99, "Category": "Furniture" },
-    { "id": 73, "Product": "Floor Lamp", "Price": 79.99, "Category": "Furniture" },
-    { "id": 74, "Product": "Blouse", "Price": 29.99, "Category": "Clothes" },
-    { "id": 75, "Product": "Sweater", "Price": 49.99, "Category": "Clothes" },
-    { "id": 76, "Product": "Dress Pants", "Price": 59.99, "Category": "Clothes" },
-    { "id": 77, "Product": "Coat", "Price": 199.99, "Category": "Clothes" },
-    { "id": 78, "Product": "Ladder", "Price": 149.99, "Category": "Tools" },
-    { "id": 79, "Product": "Air Fryer", "Price": 99.99, "Category": "Appliances" },
-    { "id": 80, "Product": "Toaster Oven", "Price": 79.99, "Category": "Appliances" },
-    { "id": 81, "Product": "Blender", "Price": 49.99, "Category": "Appliances" },
-    { "id": 82, "Product": "Coffee Maker", "Price": 39.99, "Category": "Appliances" },
-    { "id": 83, "Product": "Mixer", "Price": 99.99, "Category": "Appliances" },
-    { "id": 84, "Product": "Vacuum Cleaner", "Price": 199.99, "Category": "Appliances" },
-    { "id": 85, "Product": "Washing Machine", "Price": 499.99, "Category": "Appliances" },
-    { "id": 86, "Product": "Dryer", "Price": 399.99, "Category": "Appliances" },
-    { "id": 87, "Product": "Refrigerator", "Price": 799.99, "Category": "Appliances" },
-    { "id": 88, "Product": "Dishwasher", "Price": 349.99, "Category": "Appliances" },
-    { "id": 89, "Product": "Microwave", "Price": 89.99, "Category": "Appliances" },
-    { "id": 90, "Product": "Cookware Set", "Price": 199.99, "Category": "Kitchen" },
-    { "id": 91, "Product": "Knife Set", "Price": 79.99, "Category": "Kitchen" },
-    { "id": 92, "Product": "Bakeware Set", "Price": 69.99, "Category": "Kitchen" },
-    { "id": 93, "Product": "Food Processor", "Price": 129.99, "Category": "Appliances" },
-    { "id": 94, "Product": "Slow Cooker", "Price": 59.99, "Category": "Appliances" },
-    { "id": 95, "Product": "Toaster", "Price": 29.99, "Category": "Appliances" },
-    { "id": 96, "Product": "Utensil Set", "Price": 39.99, "Category": "Kitchen" },
-    { "id": 97, "Product": "Dutch Oven", "Price": 129.99, "Category": "Kitchen" },
-    { "id": 98, "Product": "Cast Iron Skillet", "Price": 49.99, "Category": "Kitchen" },
-    { "id": 99, "Product": "Stand Mixer", "Price": 299.99, "Category": "Appliances" }
+    {
+        "id": 1,
+        "product": "Chair",
+        "price": 50.00,
+        "category": "Furniture",
+        "description": "A comfortable chair with a modern design.",
+        "quantity": 10,
+        "deliveryTime": "2-3 days"
+    },
+    {
+        "id": 2,
+        "product": "Table",
+        "price": 100.00,
+        "category": "Furniture",
+        "description": "A sturdy table with a minimalist look.",
+        "quantity": 5,
+        "deliveryTime": "3-5 days"
+    },
+    {
+        "id": 3,
+        "product": "Basket",
+        "price": 499.99,
+        "category": "Clothes",
+        "description": "A designer basket made from high-quality materials.",
+        "quantity": 3,
+        "deliveryTime": "1-2 weeks"
+    },
+    {
+        "id": 4,
+        "product": "Pull",
+        "price": 200.00,
+        "category": "Clothes",
+        "description": "A cozy and stylish pull for any occasion.",
+        "quantity": 8,
+        "deliveryTime": "2-4 days"
+    },
+    {
+        "id": 5,
+        "product": "Hammer",
+        "price": 69.99,
+        "category": "Tools"
+    },
+    {
+        "id": 6,
+        "product": "Screwdriver",
+        "price": 19.99,
+        "category": "Tools"
+    },
+    {
+        "id": 7,
+        "product": "Saw",
+        "price": 99.99,
+        "category": "Tools"
+    },
+    {
+        "id": 8,
+        "product": "Bed",
+        "price": 499.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 9,
+        "product": "Couch",
+        "price": 799.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 10,
+        "product": "Dresser",
+        "price": 299.00,
+        "category": "Furniture"
+    },
+    {
+        "id": 11,
+        "product": "Shirt",
+        "price": 39.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 12,
+        "product": "Jeans",
+        "price": 59.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 13,
+        "product": "Blouse",
+        "price": 49.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 14,
+        "product": "Jacket",
+        "price": 99.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 15,
+        "product": "Drill",
+        "price": 149.99,
+        "category": "Tools"
+    },
+    {
+        "id": 16,
+        "product": "Circular Saw",
+        "price": 249.99,
+        "category": "Tools"
+    },
+    {
+        "id": 17,
+        "product": "Wrench Set",
+        "price": 69.99,
+        "category": "Tools"
+    },
+    {
+        "id": 18,
+        "product": "Desk",
+        "price": 399.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 19,
+        "product": "Dining Table",
+        "price": 399.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 20,
+        "product": "Rocking Chair",
+        "price": 149.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 21,
+        "product": "T-Shirt",
+        "price": 19.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 22,
+        "product": "Shorts",
+        "price": 29.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 23,
+        "product": "Skirt",
+        "price": 39.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 24,
+        "product": "Dress",
+        "price": 69.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 25,
+        "product": "Chainsaw",
+        "price": 349.99,
+        "category": "Tools"
+    },
+    {
+        "id": 26,
+        "product": "Hedge Trimmer",
+        "price": 99.99,
+        "category": "Tools"
+    },
+    {
+        "id": 27,
+        "product": "Leaf Blower",
+        "price": 149.99,
+        "category": "Tools"
+    },
+    {
+        "id": 28,
+        "product": "Nightstand",
+        "price": 49.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 29,
+        "product": "Bookshelf",
+        "price": 149.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 30,
+        "product": "Sofa",
+        "price": 799.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 31,
+        "product": "Dining Chair",
+        "price": 79.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 32,
+        "product": "Dress Shoes",
+        "price": 99.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 33,
+        "product": "Sneakers",
+        "price": 59.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 34,
+        "product": "Boots",
+        "price": 129.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 35,
+        "product": "Winter Coat",
+        "price": 199.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 36,
+        "product": "Lawn Mower",
+        "price": 349.99,
+        "category": "Tools"
+    },
+    {
+        "id": 37,
+        "product": "Power Drill",
+        "price": 129.99,
+        "category": "Tools"
+    },
+    {
+        "id": 38,
+        "product": "Angle Grinder",
+        "price": 79.99,
+        "category": "Tools"
+    },
+    {
+        "id": 39,
+        "product": "Paint Sprayer",
+        "price": 199.99,
+        "category": "Tools"
+    },
+    {
+        "id": 40,
+        "product": "Armchair",
+        "price": 299.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 41,
+        "product": "Coffee Table",
+        "price": 149.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 42,
+        "product": "Cabinet",
+        "price": 399.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 43,
+        "product": "Lamp",
+        "price": 29.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 44,
+        "product": "Tuxedo",
+        "price": 299.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 45,
+        "product": "Dress Shoes",
+        "price": 149.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 46,
+        "product": "Jeans",
+        "price": 79.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 47,
+        "product": "Trench Coat",
+        "price": 149.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 48,
+        "product": "Drill Press",
+        "price": 499.99,
+        "category": "Tools"
+    },
+    {
+        "id": 49,
+        "product": "Jigsaw",
+        "price": 129.99,
+        "category": "Tools"
+    },
+    {
+        "id": 50,
+        "product": "Circular Saw",
+        "price": 99.99,
+        "category": "Tools"
+    },
+    {
+        "id": 51,
+        "product": "Dresser",
+        "price": 149.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 52,
+        "product": "Desk Chair",
+        "price": 99.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 53,
+        "product": "Sectional",
+        "price": 999,
+        "category": "Furniture"
+    },
+    {
+        "id": 54,
+        "product": "Recliner",
+        "price": 399.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 55,
+        "product": "Armchair",
+        "price": 199.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 56,
+        "product": "Coffee Table",
+        "price": 99.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 57,
+        "product": "Bookcase",
+        "price": 249.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 58,
+        "product": "Table Lamp",
+        "price": 29.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 59,
+        "product": "T-Shirt",
+        "price": 14.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 60,
+        "product": "Hoodie",
+        "price": 39.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 61,
+        "product": "Sweatpants",
+        "price": 29.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 62,
+        "product": "Dress Shoes",
+        "price": 129.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 63,
+        "product": "Tennis Shoes",
+        "price": 79.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 64,
+        "product": "Winter Boots",
+        "price": 99.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 65,
+        "product": "Winter Jacket",
+        "price": 149.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 66,
+        "product": "Circular Saw",
+        "price": 149.99,
+        "category": "Tools"
+    },
+    {
+        "id": 67,
+        "product": "Table Saw",
+        "price": 699.99,
+        "category": "Tools"
+    },
+    {
+        "id": 68,
+        "product": "Cordless Drill",
+        "price": 99.99,
+        "category": "Tools"
+    },
+    {
+        "id": 69,
+        "product": "Air Compressor",
+        "price": 299.99,
+        "category": "Tools"
+    },
+    {
+        "id": 70,
+        "product": "Accent Chair",
+        "price": 149.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 71,
+        "product": "Side Table",
+        "price": 49.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 72,
+        "product": "TV Stand",
+        "price": 199.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 73,
+        "product": "Floor Lamp",
+        "price": 79.99,
+        "category": "Furniture"
+    },
+    {
+        "id": 74,
+        "product": "Blouse",
+        "price": 29.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 75,
+        "product": "Sweater",
+        "price": 49.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 76,
+        "product": "Dress Pants",
+        "price": 59.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 77,
+        "product": "Coat",
+        "price": 199.99,
+        "category": "Clothes"
+    },
+    {
+        "id": 78,
+        "product": "Ladder",
+        "price": 149.99,
+        "category": "Tools"
+    },
+    {
+        "id": 79,
+        "product": "Air Fryer",
+        "price": 99.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 80,
+        "product": "Toaster Oven",
+        "price": 79.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 81,
+        "product": "Blender",
+        "price": 49.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 82,
+        "product": "Coffee Maker",
+        "price": 39.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 83,
+        "product": "Mixer",
+        "price": 99.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 84,
+        "product": "Vacuum Cleaner",
+        "price": 199.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 85,
+        "product": "Washing Machine",
+        "price": 499.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 86,
+        "product": "Dryer",
+        "price": 399.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 87,
+        "product": "Refrigerator",
+        "price": 799.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 88,
+        "product": "Dishwasher",
+        "price": 349.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 89,
+        "product": "Microwave",
+        "price": 89.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 90,
+        "product": "Cookware Set",
+        "price": 199.99,
+        "category": "Kitchen"
+    },
+    {
+        "id": 91,
+        "product": "Knife Set",
+        "price": 79.99,
+        "category": "Kitchen"
+    },
+    {
+        "id": 92,
+        "product": "Bakeware Set",
+        "price": 69.99,
+        "category": "Kitchen"
+    },
+    {
+        "id": 93,
+        "product": "Food Processor",
+        "price": 129.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 94,
+        "product": "Slow Cooker",
+        "price": 59.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 95,
+        "product": "Toaster",
+        "price": 29.99,
+        "category": "Appliances"
+    },
+    {
+        "id": 96,
+        "product": "Utensil Set",
+        "price": 39.99,
+        "category": "Kitchen"
+    },
+    {
+        "id": 97,
+        "product": "Dutch Oven",
+        "price": 129.99,
+        "category": "Kitchen"
+    },
+    {
+        "id": 98,
+        "product": "Cast Iron Skillet",
+        "price": 49.99,
+        "category": "Kitchen"
+    },
+    {
+        "id": 99,
+        "product": "Stand Mixer",
+        "price": 299.99,
+        "category": "Appliances"
+    }
 ]

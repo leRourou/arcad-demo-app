@@ -21,7 +21,6 @@ function DataTable(props) {
         setData(props.data);
     }, [props.data]);
 
-
     // Redirect to the product page when clicking on a row
     function handleRowClick(id) {
         onRowClick(id);
@@ -41,16 +40,16 @@ function DataTable(props) {
 
     // Display the column names
     function displayColumns() {
-        const columnsToDisplay = columns.filter(c => c.display).map((column) => column.name);
+        const columnsToDisplay = columns.filter(c => c.display)
         return (
             <thead>
                 <tr>
                     {columnsToDisplay.map((column) => (
-                        <th onClick={() => sortData(column)} key={column}>
+                        <th onClick={() => sortData(column.name)} key={column.id}>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                {column}
-                                {currentSort.column === column && currentSort.direction === sortTypes.desc && <p style={{ margin: "0px", marginLeft: "5px" }}>▼</p>}
-                                {currentSort.column === column && currentSort.direction === sortTypes.asc && <p style={{ margin: "0px", marginLeft: "5px" }}>▲</p>}
+                                {column.displayName}
+                                {currentSort.column === column.name && currentSort.direction === sortTypes.desc && <p style={{ margin: "0px", marginLeft: "5px" }}>▼</p>}
+                                {currentSort.column === column.name && currentSort.direction === sortTypes.asc && <p style={{ margin: "0px", marginLeft: "5px" }}>▲</p>}
                             </div>
                         </th>
                     ))}

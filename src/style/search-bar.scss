@@ -14,10 +14,7 @@
   outline: none;
 }
 
-.options {
-  display: flex;
-}
 
-label {
+label:not(:first-child) {
   margin: 0 10px 0 0;
 }

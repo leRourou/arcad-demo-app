@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../style/tags.scss"
 
-function Filter(props) {
+export default function Filter(props) {
 
     let [filterClass, setFilterClass] = useState("tag");
 
@@ -25,18 +25,18 @@ function Filter(props) {
         var icon = "http://localhost:3000/images/deleteTag.svg";
         var alt = "delete tag"
         var onClick = handleDelete;
-    
+
         if (props.type === "add") {
             icon = "http://localhost:3000/images/addTag.svg";
             alt = "add tag";
             onClick = props.onAdd;
         }
-    
+
         return (
             <img src={icon} alt={alt} onClick={onClick}></img>
         );
     }
-    
+
 
     // Delete the tag
     function handleDelete() {
@@ -53,5 +53,3 @@ function Filter(props) {
         </div>
     );
 }
-
-export default Filter;
