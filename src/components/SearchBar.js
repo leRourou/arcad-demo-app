@@ -9,7 +9,6 @@ function SearchBar(props) {
         if (autoSearch) {
             props.onSearch(event.target.value);
         }
-
     }
 
     function handleSearchKey(event) {
@@ -32,12 +31,14 @@ function SearchBar(props) {
                     onChange={handleSearch}
                 />
             </div>
+
             <div className='options'>
                 <input type="checkbox" id="autoSearch" name="autoSearch" onChange={(e) => setAutoSearch(e.target.checked)}></input>
                 <label htmlFor="autoSearch">Search by typing (less efficient)</label>
                 <input type="checkbox" id="recommended" name="recommended" onChange={handleRecommended} />
                 <label htmlFor="recommended">Include recommended results</label>
             </div>
+            
         </div>
     )
 }

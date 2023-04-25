@@ -6,8 +6,6 @@ function FormField(props) {
 	const { forHtml, label, value, tooltip, inputType, onChange, options, step, min, max, regex } = props;
 	const [fieldValue, setFieldValue] = useState(value);
 
-	// TODO: Add validation for input fields
-	//const [valid, setValid] = useState(true);
 	const placeholder = value;
 
 	useEffect(() => {
@@ -127,6 +125,7 @@ export function NumberField(props) {
 		} else {
 			event.target.className = 'modify-field invalid-field';
 		}
+		props.onChange(event);
 	};
 
 	return (
@@ -156,6 +155,7 @@ export function TextField(props) {
 			value={value}
 			tooltip={<Tooltip content={tooltip} />}
 			inputType="text"
+			onChange={props.onChange}
 		/>
 	);
 }
@@ -171,6 +171,7 @@ export function TextAreaField(props) {
 			value={value}
 			tooltip={<Tooltip content={tooltip} />}
 			inputType="textarea"
+			onChange={props.onChange}
 		/>
 	);
 }
@@ -187,6 +188,7 @@ export function SelectField(props) {
 			tooltip={<Tooltip content={tooltip} />}
 			inputType="select"
 			options={options}
+			onChange={props.onChange}
 		/>
 	);
 }
@@ -201,6 +203,7 @@ export function DateField(props) {
 			value={value}
 			tooltip={<Tooltip content={tooltip} />}
 			inputType="date"
+			onChange={props.onChange}
 		/>
 	);
 }

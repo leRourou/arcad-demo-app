@@ -7,7 +7,12 @@
   --font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 1em;
-  padding-top: 5px;
+}
+
+:root {
+  --toastify-color-info: $primary-color;
+  --toastify-color-success: $valid-color;
+  --toastify-color-error: $invalid-color;
 }
 
 h1 {
@@ -29,11 +34,11 @@ html, body, .navbar, #root {
   border-bottom: 5px solid $primary-color;
 }
 
-input, textarea {
-  background-color: rgba($primary-color, .1);
+.search-bar, #add-button {
+  margin-bottom: 5px;
 }
 
-button {
+#add-button {
   background-color: $primary-color;
   color: white;
   border: none;
@@ -44,6 +49,16 @@ button {
   transition: all 0.3s ease;
 }
 
-button:hover {
+#add-button:hover {
   background-color: darken($primary-color, 10%);
 }
+
+input, textarea {
+  background-color: rgba($primary-color, .1);
+}
+
+input[type=checkbox] {
+  margin-right: 5px;
+}
+
+

@@ -8,13 +8,17 @@
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
   width: 50%;
   transition: all 0.3s ease;
+  margin-bottom: 10px;
 }
 
 .search-bar:focus input {
   outline: none;
 }
 
-
 label:not(:first-child) {
   margin: 0 10px 0 0;
+}
+
+.options {
+  margin-bottom: 10px;
 }

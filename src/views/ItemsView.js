@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import SearchBar from '../components/SearchBar';
-import DataTable from '../components/DataTable.js';
+import SearchBar from '../components/searchBar';
+import DataTable from '../components/dataTable.js';
 import Fuse from 'fuse.js'
 import ModifyArticle from './modifyArticleView';
-import Customer from './CustomerView';
-//import Filters from '../components/filterList.js';
 
 export default function ItemsView(props) {
+    const { columns, title, data, categories, singleTitle } = props;
 
-    const { columns, tags, title, data, categories, singleTitle } = props;
 
     // STATES
     const [searchTerm] = useState("");
@@ -61,14 +59,6 @@ export default function ItemsView(props) {
                     removeItemView={() => setshowItem(false)}
                     categories={categories}
                 />)
-            case "Customers":
-                return (<Customer
-                    data={
-                        data.find((item) => item.id === showItem)
-                    }
-                    removeItemView={() => setshowItem(false)}
-                    categories={categories}
-                />)
             default:
                 return (<div></div>)
         }
@@ -77,26 +67,28 @@ export default function ItemsView(props) {
     return (
         <div id='view'>
 
-            <h1 id="section-title">{title}</h1>
+            <div id="left">
+                
+                <h1 id="section-title">{title}</h1>
 
-            <button>{"Add a " + singleTitle}</button>
+                <button id="add-button">{"Add " + singleTitle}</button>
 
-            <SearchBar
-                placeholder={"Search for " + title.toLowerCase() + "..."}
-                onSearch={handleSearch}
-                onRecommended={() => setRecommended(!recommended)}
-            />
+                <SearchBar
+                    placeholder={"Search for " + title.toLowerCase() + "..."}
+                    onSearch={handleSearch}
+                    onRecommended={() => setRecommended(!recommended)}
+                />
 
-            {/*<Filters filters={tags} />*/}
+            </div>
 
             <DataTable
-                tags={tags}
                 search={searchTerm}
                 data={filteredData}
                 columns={columns}
                 onRowClick={(id) => {
                     setshowItem(id)
                 }}
+                maxResults={50}
             />
 
             {showItem > 0 && <ItemView />}

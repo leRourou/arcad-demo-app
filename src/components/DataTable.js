@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "../style/data-table.scss";
+import store from "../store";
 
 // Enum for the sort directions
 const sortTypes = {
@@ -10,16 +11,22 @@ const sortTypes = {
 function DataTable(props) {
 
     // Props
-    const {columns, onRowClick } = props;
+    const {columns, onRowClick, maxResults } = props;
 
     // States
     const [data, setData] = useState(props.data);
     const [currentSort, setCurrentSort] = useState({ column: columns[0].name, direction: sortTypes.desc });
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Make the data reload when the search term changes
     useEffect(() => {
         setData(props.data);
+        setCurrentPage(1);
     }, [props.data]);
+
+    store.subscribe(() => {
+        setData(store.getState().articles);
+    });
 
     // Redirect to the product page when clicking on a row
     function handleRowClick(id) {
@@ -72,12 +79,14 @@ function DataTable(props) {
             }
         }
 
+        const displayedProducts = products.slice((currentPage - 1) * maxResults, (currentPage - 1) * maxResults + maxResults)
+
         return (
             <tbody>
-                {products.map((product) => (
+                {displayedProducts.map((product) => (
                     <tr key={product.id} onClick={() => handleRowClick(product.id)}>
                         {
-                            // Display only the columns that are have the display property on TRUE and that are not the id
+                            // Display only the columns that have the display property on TRUE and that are not the id
                             Object.entries(product)
                                 .filter(([key]) => key !== "id")
                                 .filter(([key]) => columns.find((column) => column.name === key).display)
@@ -120,6 +129,18 @@ function DataTable(props) {
                 {displayData(data)}
             </table>
             <div id="table-footer"></div>
+            <br></br>
+            <div id="buttons-page-container">
+                <p>Showing {(currentPage-1) * maxResults + 1}-{currentPage < Math.ceil(data.length / maxResults) ? (currentPage-1) * maxResults + maxResults : data.length } out of {data.length} results</p>
+                <button className="button-page" onClick={() => {
+                        if (currentPage > 1)
+                            setCurrentPage(currentPage-1)
+                    }}>Previous page</button>
+                <button className="button-page" onClick={() => {
+                        if (currentPage < Math.ceil(data.length / maxResults))
+                            setCurrentPage(currentPage+1)
+                    }}>Next page</button>
+            </div>
         </div>
     );
 }

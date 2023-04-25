@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import NavBar from './components/navbar.js';
+import store from './store.js'
+import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom';
-import NavBar from './components/Navbar.js';
+import { ToastContainer } from "react-toastify";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,10 +21,16 @@ const routes = [
 
 root.render(
   <React.StrictMode>
-      <BrowserRouter>
-        <NavBar routes={routes}/>
-        <App/>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Provider store={store}>
+        <NavBar routes={routes} />
+        <ToastContainer 
+        hideProgressBar
+        theme="colored"
+        />
+        <App />
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

@@ -20,6 +20,7 @@ td:first-child {
 /* TODO : Choose between this and rgb($primary-color, 0.1);*/
 tr:nth-child(even){
   background-color: #f2f2f2;
+  /*background-color:  rgb($primary-color, 0.1);*/
   font-weight: bold;
 }
 
@@ -65,4 +66,20 @@ th {
 
 th:hover {
   background-color: #0000001e;
+}
+
+#buttons-page-container {
+  display: flex;
+  justify-content: right;
+}
+
+.button-page {
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5em;
+  margin: 0.5em;
+  margin-top: 0 ;
+  cursor: pointer;
 }

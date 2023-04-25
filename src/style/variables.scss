@@ -1,3 +1,5 @@
 $primary-color: #3498db;
 $invalid-color: #e74c3c;
-$gray: #2980b9;
+$valid-color: #2ecc71;
+$primary-darker : darken($primary-color, 10%);
+$gray : #95a5a6;

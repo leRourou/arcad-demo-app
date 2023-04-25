@@ -13,9 +13,9 @@ h1 {
     justify-content: center;
     align-items: center;
     margin: 0px;
-    padding: 10px;
     background-color: #fff;
     border-radius: 50px;
+    padding: 20px 0px 20px 0px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -27,7 +27,7 @@ h1 {
     padding: 0 20px;
     box-sizing: border-box;
     margin-bottom: 5px;
-    margin-top: 2px;
+    margin-top: 5px;
     transition: 0.3s ease;
 }
 
@@ -54,10 +54,10 @@ h1 {
 }
 
 .fields {
-    width: 90%;
-    column-gap: 50px;
-    column-width: 100px;
+    width: 70%;
+    column-gap: 10px;
     column-count: 2;
+    
 }
 
 .info-icon {
@@ -78,24 +78,48 @@ h1 {
     z-index: 2;
 }
 
-#save-button {
+.modify-button {
     height: 40px;
-    border: 2.5px solid $primary-color;
     border-radius: 25px;
     padding: 0 20px;
     margin-bottom: 10px;
     margin-top: 5px;
+    margin: 5px 5px 10px;
     background-color: #fff;
-    color: $primary-color;
     font-size: 1.2em;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-#save-button:hover {
-    color: #fff;
-    background-color: $primary-color;
+.save-button {
+    border: 2.5px solid $valid-color;
+    color: $valid-color;
+}
+
+.save-button:hover {
+    background-color: $valid-color;
+    color: white;
+}
+
+.cancel-button {
+    border: 2.5px solid $gray;
+    color: $gray;
+}
+
+.cancel-button:hover {
+    background-color: $gray;
+    color: white;
+}
+
+.delete-button {
+    border: 2.5px solid $invalid-color;
+    color: $invalid-color;
+}
+
+.delete-button:hover {
+    background-color: $invalid-color;
+    color: white;
 }
 
 .modify-field:invalid,
@@ -117,26 +141,46 @@ h1 {
     transition: 0.3s ease;
 }
 
+.modify-select:hover {
+    background-color: rgb($primary-color, 0.2);
+}
+
+.modify-buttons-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .tippy-box[data-theme~='tooltip-field'] {
-    background-color: $gray;
+    background-color: $primary-darker;
     color: #fff;
     padding: 0;
     padding-bottom: 5px;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='top']>.tippy-arrow::before {
-    border-top-color: $gray;
+    border-top-color: $primary-darker;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='bottom']>.tippy-arrow::before {
-    border-bottom-color: $gray;
+    border-bottom-color: $primary-darker;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='left']>.tippy-arrow::before {
-    border-left-color: $gray;
+    border-left-color: $primary-darker;
 }
 
 .tippy-box[data-theme~='tooltip-field'][data-placement^='right']>.tippy-arrow::before {
-    border-right-color: $gray;
+    border-right-color: $primary-darker;
 }
 
+.link {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.field-line {
+    display: flex;
+    margin-top: 15px;
+    column-gap: 10px;
+}
