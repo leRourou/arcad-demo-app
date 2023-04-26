@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { buildArticle } from './services/articleServices.js' 
+import { createArticleModel } from './models/article.js' 
 
 const initialState = []
 
@@ -14,7 +14,7 @@ function articlesReducer(state = initialState, action) {
         case 'UPDATE_ARTICLE':
             return state.map((item) => {
                 if (item.id === action.payload.article.ARID) {
-                    return buildArticle(action.payload.article)
+                    return createArticleModel(action.payload.article)
                 }
                 return item
             })

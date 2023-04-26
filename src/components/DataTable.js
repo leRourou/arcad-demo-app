@@ -131,7 +131,9 @@ function DataTable(props) {
             <div id="table-footer"></div>
             <br></br>
             <div id="buttons-page-container">
+                
                 <p>Showing {(currentPage-1) * maxResults + 1}-{currentPage < Math.ceil(data.length / maxResults) ? (currentPage-1) * maxResults + maxResults : data.length } out of {data.length} results</p>
+
                 <button className="button-page" onClick={() => {
                         if (currentPage > 1)
                             setCurrentPage(currentPage-1)

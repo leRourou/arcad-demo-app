@@ -3,6 +3,8 @@ import Tooltip from './tooltip';
 
 // Form field component
 function FormField(props) {
+
+
 	const { forHtml, label, value, tooltip, inputType, onChange, options, step, min, max, regex } = props;
 	const [fieldValue, setFieldValue] = useState(value);
 
@@ -23,7 +25,7 @@ function FormField(props) {
 							e => setFieldValue(e.target.value)
 						}
 					>
-						{options.map((option) => (
+						{options && options.map((option) => (
 							<option key={option.id} value={option.name}>{option.name}</option>
 						))}
 					</select>

@@ -1,7 +1,7 @@
 import React from "react";
 import NotFound from "./views/misc/notFoundView.js";
 import Building from "./views/misc/buildingView";
-import Articles from "./controllers/articlesController.js";
+import Articles from "./loaders/articlesLoader.js";
 import { Route, Routes } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 

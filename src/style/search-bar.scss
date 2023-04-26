@@ -20,5 +20,10 @@ label:not(:first-child) {
 }
 
 .options {
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
   margin-bottom: 10px;
+  padding: 2px;
+  border-radius: 5px;
 }

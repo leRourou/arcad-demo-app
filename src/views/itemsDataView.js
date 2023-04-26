@@ -2,26 +2,26 @@ import React, { useState } from 'react';
 import SearchBar from '../components/searchBar';
 import DataTable from '../components/dataTable.js';
 import Fuse from 'fuse.js'
-import ModifyArticle from './modifyArticleView';
+import ModifyArticle from './articleView';
+import store from '../store.js';
 
 export default function ItemsView(props) {
-    const { columns, title, data, categories, singleTitle } = props;
-
+    const { columns, title, data, /*singleTitle*/ } = props;
 
     // STATES
     const [searchTerm] = useState("");
-    const [filteredData, setFilteredData] = useState(data);
+    const [displayedData, setDisplayedData] = useState(data());
     const [recommended, setRecommended] = useState(false);
     const [showItem, setshowItem] = useState(false);
+    /*const [addItem, setAddItem] = useState(false);*/
 
     document.title = title;
 
-    // Search
-    function handleSearch(searchTerm) {
 
+    function Search(search) {
         // If search term is empty, display all data
-        if (searchTerm === "") {
-            setFilteredData(data);
+        if (search === "") {
+            setDisplayedData(data());
             return;
         }
 
@@ -32,21 +32,28 @@ export default function ItemsView(props) {
                 keys: Object.entries(columns).map(([key, value]) => value.name),
             };
 
-            const fuse = new Fuse(data, options);
-            setFilteredData(fuse.search(searchTerm).map(({ item }) => item));
+            const fuse = new Fuse( data(), options);
+            setDisplayedData(fuse.search(search).map(({ item }) => item));
             return;
         }
 
         // Else, use a simple filter
-        const newData = data.filter((item) => {
+        const newData = data().filter((item) => {
             return (
                 Object.entries(columns).map(([key, value]) => item[value.name])
                     .join(" ")
                     .toLowerCase()
-                    .indexOf(searchTerm.toLowerCase()) > -1
+                    .indexOf(search.toLowerCase()) > -1
             );
         });
-        setFilteredData(newData);
+
+        // Update filtered data
+        setDisplayedData(newData);
+    }
+
+    // Search
+    function handleSearch(searchTerm) {
+        Search(searchTerm);
     }
 
     function ItemView() {
@@ -54,10 +61,9 @@ export default function ItemsView(props) {
             case "Articles":
                 return (<ModifyArticle
                     data={
-                        data.find((item) => item.id === showItem)
+                        data().find((item) => item.id === showItem)
                     }
                     removeItemView={() => setshowItem(false)}
-                    categories={categories}
                 />)
             default:
                 return (<div></div>)
@@ -67,23 +73,19 @@ export default function ItemsView(props) {
     return (
         <div id='view'>
 
-            <div id="left">
-                
-                <h1 id="section-title">{title}</h1>
+            <h1 id="section-title">{title}</h1>
 
-                <button id="add-button">{"Add " + singleTitle}</button>
+            {/*<button id="add-button" onClick={() => setAddItem(true)}>{"Add " + singleTitle}</button>*/}
 
-                <SearchBar
-                    placeholder={"Search for " + title.toLowerCase() + "..."}
-                    onSearch={handleSearch}
-                    onRecommended={() => setRecommended(!recommended)}
-                />
-
-            </div>
+            <SearchBar
+                placeholder={"Search for " + title.toLowerCase() + "..."}
+                onSearch={handleSearch}
+                onRecommended={() => setRecommended(!recommended)}
+            />
 
             <DataTable
                 search={searchTerm}
-                data={filteredData}
+                data={displayedData}
                 columns={columns}
                 onRowClick={(id) => {
                     setshowItem(id)
@@ -92,6 +94,8 @@ export default function ItemsView(props) {
             />
 
             {showItem > 0 && <ItemView />}
+
+            {/*addItem && <ItemView />*/}
 
         </div>
     )

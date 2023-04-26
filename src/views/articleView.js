@@ -7,15 +7,18 @@ import { updateArticle } from "../services/articleServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+function errorToast(error) {
+  toast(error, { type: "error" });
+}
+
 export default function ModifyArticleView(props) {
 
   const { data, removeItemView, categories } = props;
 
-
   // States
   const [description, setDescription] = useState(data.description);
   const [sold_price, setSoldPrice] = useState(data.sold_price);
-  const [production_price, setProductionPrice] = useState(data.production_cost);
+  const [wholesale_price, setWholesalePrice] = useState(data.wholesale_price);
   const [family, setFamily] = useState(data.family);
   const [stock, setStock] = useState(data.stock);
   const [quantity_min, setQuantityMin] = useState(data.quantity_min);
@@ -39,14 +42,15 @@ export default function ModifyArticleView(props) {
     // Build article object
     const article = {
       id: data.id,
-      description: description,
+      description: description.trim(),
       sold_price: sold_price,
-      production_price: production_price,
       family: family,
       stock: stock,
       quantity_min: quantity_min,
       quantity_provided: quantity_provided,
-      tax_id: tax_id
+      wholesale_price: 50,
+      tax_id: tax_id,
+      last_update: new Date()
     };
 
     const errors = [];
@@ -54,7 +58,7 @@ export default function ModifyArticleView(props) {
     // Errors handling
 
     // Description
-    if (article.description === "") {
+    if (article.description === "" || article.description === null) {
       errors.push("Description can't be empty");
     }
 
@@ -69,6 +73,19 @@ export default function ModifyArticleView(props) {
 
     if (article.sold_price < 0) {
       errors.push("Sold price can't be negative");
+    }
+    
+    if (isNaN(article.sold_price)) {
+      errors.push("Sold price must be a number"); 
+    }
+
+    // Wholesale price
+    if (article.wholesale_price === "") {
+      errors.push("Wholesale price can't be empty");
+    }
+
+    if (article.wholesale_price < 0) {
+      errors.push("Wholesale price can't be negative");
     }
 
     // Production price
@@ -109,8 +126,7 @@ export default function ModifyArticleView(props) {
 
     // TODO : Make the errors more precise
     if (errors.length > 0) {
-      const error = () => toast(errors.join("\n"), { type: "error" });
-      error();
+      errors.forEach(error => errorToast(error));
     } else {
       const updateSuccess = () => toast("Article successfully updated !", { type: "success" });
       updateArticle(article)
@@ -133,15 +149,29 @@ export default function ModifyArticleView(props) {
 
         <div style={{ width: "80%" }}>
 
-          <TextField
-            for="description"
-            label="Description"
-            value={data.description}
-            tooltip="Can't be empty"
-            onChange={(e) => { setDescription(e.target.value) }}
-          />
-
           <div className="field-line">
+
+            <TextField
+              for="description"
+              label="Description"
+              value={data.description}
+              tooltip={<>A description of the article. <br></br> Can't be empty</>}
+              onChange={(e) => { setDescription(e.target.value) }}
+            />
+
+            <SelectField
+              for="family"
+              label="Family"
+              value={data.family}
+              options={categories}
+              tooltip={<>To add a family, go to the <Link className="link" to='/families'>Manage families</Link> page</>}
+              onChange={(e) => { setFamily(e.target.value) }}
+            />
+
+          </div>
+          <div className="field-line">
+
+
             <NumberField
               for="sold_price"
               label="Sold price"
@@ -154,24 +184,24 @@ export default function ModifyArticleView(props) {
               onChange={(e) => { setSoldPrice(e.target.value) }}
             />
 
-            <NumberField
-              for="production_price"
-              label="Production price"
-              value={data.production_cost}
-              tooltip={<>Must be a positive number with two decimals <b> Example: </b> 12.34</>}
+            {<NumberField
+              for="wholesale_price"
+              label="Wholesale price"
+              value={data.wholesale_price}
+              tooltip={<>Sum of a given product's cost price plus the manufacturer's profit margin<br></br>Must be a positive number with two decimals <b> Example: </b> 12.34</>}
               min="0"
               step="0.01"
               max="9999999"
               regex={/\d+\.\d{2}/}
-              onChange={(e) => { setProductionPrice(e.target.value) }}
-            />
+              onChange={(e) => { setWholesalePrice(e.target.value) }}
+            />}
 
             <SelectField
               for="tax_id"
               label="Tax"
               value={data.tax_id}
               options={[{ id: 1, name: "TVA 20%" }, { id: 2, name: "TVA 10%" }]}
-              tooltip={<>To add a tax, go to the <Link className="link" to='/taxes'>Tax Page</Link></>}
+              tooltip={<>To add a tax, go to the <Link className="link" to='/taxes'>Manage taxes</Link> page</>}
               onChange={(e) => { setTaxId(e.target.value) }}
             />
           </div>
@@ -193,7 +223,7 @@ export default function ModifyArticleView(props) {
               for="quantity_min"
               label="Quantity minimum"
               value={data.quantity_min}
-              tooltip="Must be a positive or null integer"
+              tooltip={<>The minimum quantity that a customer can order. <br></br> Must be positive or null</>}
               min="0"
               step="1"
               regex={/^\+?(0|[1-9]\d*)$/}
@@ -209,17 +239,6 @@ export default function ModifyArticleView(props) {
               step="1"
               regex={/^\+?(0|[1-9]\d*)$/}
               onChange={(e) => { setQuantityProvided(e.target.value) }}
-            />
-          </div>
-
-          <div className="field-line">
-            <SelectField
-              for="family"
-              label="Family"
-              value={data.family}
-              options={categories}
-              tooltip="To add a family, go to the Family page"
-              onChange={(e) => { setFamily(e.target.value) }}
             />
           </div>
         </div>
