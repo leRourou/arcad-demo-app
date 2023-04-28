@@ -1,14 +1,14 @@
 import axios from 'axios';
 import store from '../store';
-import { createArticleModel, reverseArticleModel } from '../models/article';
+import { Article } from '../models/article';
 
 const api_endpoint = 'http://10.5.6.28:10010/web/services/articles/';
 
 // Get All Articles and store them in the store
 export function getAllArticles() {
     return axios.get(api_endpoint + "?nb=10000")
-        .then(response => response.data.articles.map(article => createArticleModel(article)))
-        .then(articles => store.dispatch({ type: 'LOAD_DATA', payload: { data: articles } }))
+        .then(response => response.data.articles.map(article => new Article(article)))
+        .then(articles => store.dispatch({ type: 'LOAD_ARTICLES', payload: { data: articles } }))
 }
 
 // Get Article By Id
@@ -19,7 +19,7 @@ export function getArticleById(id) {
 
 // Update Article
 export function updateArticle(article) {
-    const newArticle = reverseArticleModel(article);
+    const newArticle = Article.reverse(article);
     axios.put(api_endpoint + article.id, newArticle, {
         headers: {
             'Accept': '*/*',
@@ -42,7 +42,7 @@ export function createArticle(article) {
         }
     })
     
-    const newArticle = reverseArticleModel(article);
+    const newArticle = Article.reverse(article);
 
     axios.post(api_endpoint, newArticle, {
         headers: {
@@ -50,7 +50,9 @@ export function createArticle(article) {
             'Content-Type': 'application/json'
         }
     })
-        .then(store.dispatch({ type: 'ADD_ARTICLE', payload: { article: createArticleModel(newArticle) } }));
+    .then(
+        store.dispatch({ type: 'ADD_ARTICLE', payload: { article: new Article(newArticle) } })
+        )
 }
 
 // Delete Article

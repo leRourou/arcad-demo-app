@@ -5,9 +5,6 @@ import Fuse from 'fuse.js'
 import ModifyArticle from './articleView';
 import Loading from '../views/misc/loadingView.js'
 import { getAllArticles } from '../services/articleServices.js'
-import store from "../store.js";
-
-
 
 export default function ItemsView(props) {
 
@@ -28,24 +25,17 @@ export default function ItemsView(props) {
     async function loadData() {
         await getAllArticles();
         setLoading(false);
-      }
+    }
 
-      useEffect(() => {
-    
-        // If data is already loaded, don't load it again
-        switch (title) {
-            case "Articles":
-                if (store.getState().articles.length > 0) {
-                    setLoading(false);
-                    return;
-                  }
-              
-                  loadData();
-                break;
-            default:
-                break;
+    useEffect(() => {
+
+        if (data().length > 0) {
+            setLoading(false);
+            return;
         }
-      }, [title]);
+
+        loadData();
+    }, [title, data]);
 
 
     function Search(search) {
@@ -62,7 +52,7 @@ export default function ItemsView(props) {
                 keys: Object.entries(columns).map(([key, value]) => value.name),
             };
 
-            const fuse = new Fuse( data(), options);
+            const fuse = new Fuse(data(), options);
             setDisplayedData(fuse.search(search).map(({ item }) => item));
             return;
         }
@@ -88,8 +78,7 @@ export default function ItemsView(props) {
 
     function ItemView(props) {
 
-        var {type} = props;
-        console.log(data())
+        var { type } = props;
 
         var dataToPass = data().find((item) => item.id === showItem)
 
@@ -109,7 +98,7 @@ export default function ItemsView(props) {
                 }
                 return (<ModifyArticle
                     data={dataToPass}
-                    removeItemView={() => {setshowItem(false); setAddItem(false)}}
+                    removeModal={() => { setshowItem(false); setAddItem(false) }}
                     type={props.type}
                 />)
             default:
@@ -119,7 +108,7 @@ export default function ItemsView(props) {
 
     if (loading) {
         return <Loading />;
-      }
+    }
 
     return (
         <div id='view'>
@@ -146,7 +135,7 @@ export default function ItemsView(props) {
 
             {showItem > 0 && <ItemView type="modify" />}
 
-            {addItem && <ItemView type="adding"/>}
+            {addItem && <ItemView type="adding" />}
 
         </div>
     )

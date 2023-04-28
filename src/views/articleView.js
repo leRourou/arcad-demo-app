@@ -4,12 +4,12 @@ import { TextField, NumberField, SelectField } from '../components/formField.js'
 import Modal from '../components/modal.js';
 import { Link } from "react-router-dom";
 import { updateArticle, createArticle } from "../services/articleServices";
-import 'react-toastify/dist/ReactToastify.css';
-import { successDelete, errorToast, successUpdate } from "../services/toastsServices";
+import { successDelete, errorToast, successUpdate, successAdd } from "../services/toastsServices";
+import { Article } from "../models/article.js";
 
-export default function ModifyArticleView(props) {
+export default function ArticleView(props) {
 
-  const { removeItemView, categories, type, data } = props;
+  const { removeModal, categories, type, data } = props;
 
   // Article state
   const [article, setArticle] = useState({
@@ -23,111 +23,48 @@ export default function ModifyArticleView(props) {
     tax_id: data.tax_id
   });
 
-  // TODO :Delete article
-  function deleteArticle() {
-    removeItemView();
-    successDelete();
-  }
+  // Add article
+  function addArticle() {
+    var nArticle = article;
+    nArticle.description = nArticle.description.trim()
+    nArticle.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
+    nArticle.id = "000000";
 
-  // Errors
-  function getErrors(description, sold_price, wholesale_price, stock, quantity_min, quantity_provided, tax_id) {
+    const errors = Article.getErrors(article);
 
-    const errors = [];
-
-    // Description
-    if (description === "" || description === null) {
-      errors.push("Description can't be empty");
+    if (errors.length > 0) {
+      errors.forEach(error => errorToast(error));
+      return;
     }
 
-    if (description.length > 50) {
-      errors.push("Description can't be longer than 50 characters");
-    }
-
-    // Sold price
-    if (sold_price === "") {
-      errors.push("Sold price can't be empty");
-    }
-
-    if (sold_price < 0) {
-      errors.push("Sold price can't be negative");
-    }
-
-    if (isNaN(sold_price)) {
-      errors.push("Sold price must be a number");
-    }
-
-    // Wholesale price
-    if (wholesale_price === "") {
-      errors.push("Wholesale price can't be empty");
-    }
-
-    if (wholesale_price < 0) {
-      errors.push("Wholesale price can't be negative");
-    }
-
-    // Production price
-    if (wholesale_price === "") {
-      errors.push("Production price can't be empty");
-    }
-
-    if (wholesale_price < 0) {
-      errors.push("Production price can't be negative");
-    }
-
-    // Stock
-    if (stock === "") {
-      errors.push("Stock can't be empty");
-    }
-
-    if (stock < 0) {
-      errors.push("Stock can't be negative");
-    }
-
-    // Quantity min
-    if (quantity_min === "") {
-      errors.push("Quantity min can't be empty");
-    }
-
-    if (quantity_min < 0) {
-      errors.push("Quantity min can't be negative");
-    }
-
-    // Quantity provided
-    if (quantity_provided === "") {
-      errors.push("Quantity provided can't be empty");
-    }
-
-    if (quantity_provided < 0) {
-      errors.push("Quantity provided can't be negative");
-    }
-
-    return errors;
+    createArticle(nArticle)
+    removeModal();
+    successAdd(); // Display success toast
   }
 
   // Modify article
-  function modifyOrCreateArticle() {
-
+  async function modifyArticle() {
     var nArticle = article;
+    nArticle.description = nArticle.description.trim()
+    nArticle.id = data.id;
 
-    nArticle.description = nArticle.description.trim();
+    const errors = Article.getErrors(article);
 
-    if (type === "adding") {
-      nArticle.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
-      nArticle.id = "000000";
-    } else {
-      nArticle.id = nArticle.id;
-    }
-
-    const errors = getErrors();
-
-    // TODO : Make the errors more precise
     if (errors.length > 0) {
       errors.forEach(error => errorToast(error));
-    } else {
-      type === "adding" ? createArticle(nArticle) : updateArticle(nArticle);
-      removeItemView();
-      successUpdate();
+      return;
     }
+
+    await updateArticle(nArticle)
+    removeModal(); // Remove item view
+    successUpdate(); // Display success toast
+  }
+
+
+  // Delete article
+  function deleteArticle() {
+    removeModal();
+    successDelete();
   }
 
   return (
@@ -138,7 +75,7 @@ export default function ModifyArticleView(props) {
         <div
           id="black-back"
           onClick={() => {
-            removeItemView();
+            removeModal();
           }}
         />
 
@@ -169,7 +106,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   family: e.target.value
-                })) }}
+                }))
+              }}
             />
 
           </div>
@@ -189,7 +127,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   sold_price: e.target.value
-                })) }}
+                }))
+              }}
             />
 
             {<NumberField
@@ -205,7 +144,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   wholesale_price: e.target.value
-                })) }}
+                }))
+              }}
             />}
 
             <SelectField
@@ -218,7 +158,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   tax_id: e.target.value
-                })) }}
+                }))
+              }}
             />
           </div>
 
@@ -236,7 +177,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   stock: e.target.value
-                })) }}
+                }))
+              }}
             />
 
             <NumberField
@@ -251,7 +193,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   quantity_min: e.target.value
-                })) }}
+                }))
+              }}
             />
 
             <NumberField
@@ -266,7 +209,8 @@ export default function ModifyArticleView(props) {
                 setArticle(prevState => ({
                   ...prevState,
                   quantity_provided: e.target.value
-                })) }}
+                }))
+              }}
             />
           </div>
         </div>
@@ -276,11 +220,11 @@ export default function ModifyArticleView(props) {
           <button className="modify-button save-button" onClick={() => {
             if (type === "adding") {
               if (window.confirm("Are you sure you want to add this article ?")) {
-                modifyOrCreateArticle()
+                addArticle()
               }
             } else {
               if (window.confirm("Are you sure you want to save changes ?")) {
-                modifyOrCreateArticle()
+                modifyArticle()
               }
             }
           }}>{type === "adding" ? "Add article" : "Save changes"}</button>
@@ -288,7 +232,7 @@ export default function ModifyArticleView(props) {
           {type === "adding" ?
             <button className="modify-button cancel-button" onClick={() => {
               if (window.confirm("Are you sure you want to cancel ?")) {
-                removeItemView()
+                removeModal()
               }
             }}>Cancel</button>
             :

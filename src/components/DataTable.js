@@ -106,6 +106,7 @@ function DataTable(props) {
         sort.column = column;
         sort.direction = currentSort.direction === sortTypes.asc ? sortTypes.desc : sortTypes.asc;
 
+        // Sort the data according to the column type
         const sortedData = [...data].sort((a, b) => {
             switch (typeof a[sort.column]) {
                 case "string":

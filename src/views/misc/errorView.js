@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Building() {
+export default function Error() {
 
   document.title = "Page building"
 

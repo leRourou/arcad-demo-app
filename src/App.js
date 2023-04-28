@@ -4,16 +4,15 @@ import Building from "./views/misc/buildingView";
 import Items from "./views/itemsDataView.js";
 import { Route, Routes } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
-import { columns } from "./models/article";
+import { Article } from "./models/article";
 import store from "./store.js";
-
 
 function App() {
   return (
     <Routes>
       <Route path="/articles" element={
         <Items
-          columns={columns}
+          columns={Article.columns}
           title={'Articles'}
           singleTitle='article'
           categories={[]}

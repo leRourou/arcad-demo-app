@@ -1,25 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { createArticleModel } from './models/article.js' 
+import { Article } from './models/article.js'
+import { createCustomerModel } from './models/customer.js'
 
-const initialState = []
+const initialCustomersState = [] 
 
-function articlesReducer(state = initialState, action) {
+function customersReducer(state = initialCustomersState, action) {
     switch (action.type) {
-        case 'LOAD_DATA':
+        case 'LOAD_CUSTOMERS':
             return action.payload.data
 
-        case 'ADD_ARTICLE':
-            return [...state, action.payload.article]
+        case 'ADD_CUSTOMER':
+            return [...state, action.payload.customer]
 
-        case 'UPDATE_ARTICLE':
+        case 'UPDATE_CUSTOMER':
             return state.map((item) => {
-                if (item.id === action.payload.article.ARID) {
-                    return createArticleModel(action.payload.article)
+                if (item.id === action.payload.customer.CID) {
+                    return createCustomerModel(action.payload.customer)
                 }
                 return item
             })
 
-        case 'DELETE_DATA':
+        case 'DELETE_CUSTOMER':
             return state.filter((item) => item.id !== action.payload.id)
 
         default:
@@ -29,6 +30,7 @@ function articlesReducer(state = initialState, action) {
 
 export default configureStore({
     reducer: {
-        articles: articlesReducer
+        articles: Article.reducer,
+        customers: customersReducer
     }
 })
