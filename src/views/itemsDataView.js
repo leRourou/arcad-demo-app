@@ -1,21 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/searchBar';
 import DataTable from '../components/dataTable.js';
 import Fuse from 'fuse.js'
 import ModifyArticle from './articleView';
-import store from '../store.js';
+import Loading from '../views/misc/loadingView.js'
+import { getAllArticles } from '../services/articleServices.js'
+import store from "../store.js";
+
+
 
 export default function ItemsView(props) {
-    const { columns, title, data, /*singleTitle*/ } = props;
+
+    // PROPS
+    const { columns, title, data, singleTitle } = props;
 
     // STATES
+    const [loading, setLoading] = useState(true);
     const [searchTerm] = useState("");
     const [displayedData, setDisplayedData] = useState(data());
     const [recommended, setRecommended] = useState(false);
     const [showItem, setshowItem] = useState(false);
-    /*const [addItem, setAddItem] = useState(false);*/
+    const [addItem, setAddItem] = useState(false);
 
     document.title = title;
+
+    // DATA LOAD
+    async function loadData() {
+        await getAllArticles();
+        setLoading(false);
+      }
+
+      useEffect(() => {
+    
+        // If data is already loaded, don't load it again
+        switch (title) {
+            case "Articles":
+                if (store.getState().articles.length > 0) {
+                    setLoading(false);
+                    return;
+                  }
+              
+                  loadData();
+                break;
+            default:
+                break;
+        }
+      }, [title]);
 
 
     function Search(search) {
@@ -56,26 +86,47 @@ export default function ItemsView(props) {
         Search(searchTerm);
     }
 
-    function ItemView() {
+    function ItemView(props) {
+
+        var {type} = props;
+        console.log(data())
+
+        var dataToPass = data().find((item) => item.id === showItem)
+
         switch (title) {
             case "Articles":
-                return (<ModifyArticle
-                    data={
-                        data().find((item) => item.id === showItem)
+                if (type === "adding") {
+                    dataToPass = {
+                        description: "Article",
+                        sold_price: "0.00",
+                        wholesale_price: "0.00",
+                        family: "",
+                        stock: "0",
+                        quantity_min: "0",
+                        quantity_provided: "0",
+                        tax_id: "",
                     }
-                    removeItemView={() => setshowItem(false)}
+                }
+                return (<ModifyArticle
+                    data={dataToPass}
+                    removeItemView={() => {setshowItem(false); setAddItem(false)}}
+                    type={props.type}
                 />)
             default:
                 return (<div></div>)
         }
     }
 
+    if (loading) {
+        return <Loading />;
+      }
+
     return (
         <div id='view'>
 
             <h1 id="section-title">{title}</h1>
 
-            {/*<button id="add-button" onClick={() => setAddItem(true)}>{"Add " + singleTitle}</button>*/}
+            <button id="add-button" onClick={() => setAddItem(true)}>{"Add " + singleTitle}</button>
 
             <SearchBar
                 placeholder={"Search for " + title.toLowerCase() + "..."}
@@ -93,9 +144,9 @@ export default function ItemsView(props) {
                 maxResults={50}
             />
 
-            {showItem > 0 && <ItemView />}
+            {showItem > 0 && <ItemView type="modify" />}
 
-            {/*addItem && <ItemView />*/}
+            {addItem && <ItemView type="adding"/>}
 
         </div>
     )

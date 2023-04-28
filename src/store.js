@@ -8,8 +8,8 @@ function articlesReducer(state = initialState, action) {
         case 'LOAD_DATA':
             return action.payload.data
 
-        case 'ADD_DATA':
-            return [...state, action.payload.data]
+        case 'ADD_ARTICLE':
+            return [...state, action.payload.article]
 
         case 'UPDATE_ARTICLE':
             return state.map((item) => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "../style/data-table.scss";
 import store from "../store";
 
@@ -11,7 +11,7 @@ const sortTypes = {
 function DataTable(props) {
 
     // Props
-    const {columns, onRowClick, maxResults } = props;
+    const { columns, onRowClick, maxResults } = props;
 
     // States
     const [data, setData] = useState(props.data);
@@ -28,7 +28,7 @@ function DataTable(props) {
         setData(store.getState().articles);
     });
 
-    // Redirect to the product page when clicking on a row
+    // Redirect to the item page when clicking on a row
     function handleRowClick(id) {
         onRowClick(id);
     }
@@ -52,7 +52,7 @@ function DataTable(props) {
             <thead>
                 <tr>
                     {columnsToDisplay.map((column) => (
-                        <th onClick={() => sortData(column.name)} key={column.id}>
+                        <th className={column.type}  onClick={() => sortData(column.name)} key={column.id}>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                                 {column.displayName}
                                 {currentSort.column === column.name && currentSort.direction === sortTypes.desc && <p style={{ margin: "0px", marginLeft: "5px" }}>▼</p>}
@@ -66,28 +66,29 @@ function DataTable(props) {
     }
 
     // Display the data in the table
-    function displayData(products) {
+    function displayData(items) {
+
+        // Display only the items that are on the current page
+        const displayedItems = items.slice((currentPage - 1) * maxResults, (currentPage - 1) * maxResults + maxResults)
 
         // Format the cell according to the column type (ex : price => add €)
         function formatCell(key, value) {
             const column = columns.find((column) => column.name === key);
             switch (column.type) {
                 case "price":
-                    return <td key={value}>{value}€</td>;
+                    return <td style={{textAlign:"end"}} key={key}>{formatNumber(value)} €</td>;
                 default:
-                    return <td key={value}>{value}</td>;
+                    return <td key={key}>{value}</td>;
             }
         }
 
-        const displayedProducts = products.slice((currentPage - 1) * maxResults, (currentPage - 1) * maxResults + maxResults)
-
         return (
             <tbody>
-                {displayedProducts.map((product) => (
-                    <tr key={product.id} onClick={() => handleRowClick(product.id)}>
+                {displayedItems.map((item) => (
+                    <tr key={item.id} onClick={() => handleRowClick(item.id)}>
                         {
                             // Display only the columns that have the display property on TRUE and that are not the id
-                            Object.entries(product)
+                            Object.entries(item)
                                 .filter(([key]) => key !== "id")
                                 .filter(([key]) => columns.find((column) => column.name === key).display)
                                 .map(([key, value]) => formatCell(key, value))
@@ -131,20 +132,48 @@ function DataTable(props) {
             <div id="table-footer"></div>
             <br></br>
             <div id="buttons-page-container">
-                
-                <p>Showing {(currentPage-1) * maxResults + 1}-{currentPage < Math.ceil(data.length / maxResults) ? (currentPage-1) * maxResults + maxResults : data.length } out of {data.length} results</p>
+
+                <p>Showing {(currentPage - 1) * maxResults + 1}-{currentPage < Math.ceil(data.length / maxResults) ? (currentPage - 1) * maxResults + maxResults : data.length} out of {data.length} results</p>
 
                 <button className="button-page" onClick={() => {
-                        if (currentPage > 1)
-                            setCurrentPage(currentPage-1)
-                    }}>Previous page</button>
+                    if (currentPage > 1)
+                        setCurrentPage(currentPage - 1)
+                }}>Previous page</button>
                 <button className="button-page" onClick={() => {
-                        if (currentPage < Math.ceil(data.length / maxResults))
-                            setCurrentPage(currentPage+1)
-                    }}>Next page</button>
+                    if (currentPage < Math.ceil(data.length / maxResults))
+                        setCurrentPage(currentPage + 1)
+                }}>Next page</button>
             </div>
         </div>
     );
 }
+
+function formatNumber(num) {
+    if (typeof num !== 'number') {
+      return '';
+    }
+    
+    var str = num.toString().replace(/[\s,]/g, '');
+    
+    if (str.charAt(0) === '.') {
+      str = '0' + str;
+    }
+    
+    var parts = str.split('.');
+    var integerPart = parts[0];
+    var decimalPart = parts.length > 1 ? '.' + parts[1] : '.00';
+    
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    
+    if (decimalPart.length > 3) {
+      decimalPart = parseFloat(decimalPart).toFixed(2);
+    } else if (decimalPart.length === 2) {
+      decimalPart += '0';
+    }
+    
+    return integerPart + decimalPart;
+  }
+  
+  
 
 export default DataTable;

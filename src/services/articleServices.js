@@ -6,7 +6,7 @@ const api_endpoint = 'http://10.5.6.28:10010/web/services/articles/';
 
 // Get All Articles and store them in the store
 export function getAllArticles() {
-    return axios.get(api_endpoint + "?nb=100")
+    return axios.get(api_endpoint + "?nb=10000")
         .then(response => response.data.articles.map(article => createArticleModel(article)))
         .then(articles => store.dispatch({ type: 'LOAD_DATA', payload: { data: articles } }))
 }
@@ -27,6 +27,30 @@ export function updateArticle(article) {
         }
     })
         .then(store.dispatch({ type: 'UPDATE_ARTICLE', payload: { article: newArticle } }));
+}
+
+// Create Article
+export function createArticle(article) {
+    // TODO : remove this line
+    article.family = "511"
+    article.tax_id = 2
+
+    // get the article with the highest id
+    store.getState().articles.forEach((item) => {
+        if (parseInt(item.id) > parseInt(article.id)) {
+            article.id = 0 + (parseInt(item.id) + 1).toString()
+        }
+    })
+    
+    const newArticle = reverseArticleModel(article);
+
+    axios.post(api_endpoint, newArticle, {
+        headers: {
+            'Accept': '*/*',
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(store.dispatch({ type: 'ADD_ARTICLE', payload: { article: createArticleModel(newArticle) } }));
 }
 
 // Delete Article

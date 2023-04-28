@@ -3,142 +3,137 @@ import React, { useState } from "react";
 import { TextField, NumberField, SelectField } from '../components/formField.js';
 import Modal from '../components/modal.js';
 import { Link } from "react-router-dom";
-import { updateArticle } from "../services/articleServices";
-import { toast } from 'react-toastify';
+import { updateArticle, createArticle } from "../services/articleServices";
 import 'react-toastify/dist/ReactToastify.css';
-
-function errorToast(error) {
-  toast(error, { type: "error" });
-}
+import { successDelete, errorToast, successUpdate } from "../services/toastsServices";
 
 export default function ModifyArticleView(props) {
 
-  const { data, removeItemView, categories } = props;
+  const { removeItemView, categories, type, data } = props;
 
-  // States
-  const [description, setDescription] = useState(data.description);
-  const [sold_price, setSoldPrice] = useState(data.sold_price);
-  const [wholesale_price, setWholesalePrice] = useState(data.wholesale_price);
-  const [family, setFamily] = useState(data.family);
-  const [stock, setStock] = useState(data.stock);
-  const [quantity_min, setQuantityMin] = useState(data.quantity_min);
-  const [quantity_provided, setQuantityProvided] = useState(data.quantity_provided);
-  const [tax_id, setTaxId] = useState(data.tax_id);
+  // Article state
+  const [article, setArticle] = useState({
+    description: data.description,
+    sold_price: data.sold_price,
+    wholesale_price: data.wholesale_price,
+    family: data.family,
+    stock: data.stock,
+    quantity_min: data.quantity_min,
+    quantity_provided: data.quantity_provided,
+    tax_id: data.tax_id
+  });
 
-  // Delete article
+  // TODO :Delete article
   function deleteArticle() {
-    // TODO : Delete article
-
     removeItemView();
-
-    const deleteSuccess = () => toast("Article deleted !", { type: "success" });
-
-    deleteSuccess();
+    successDelete();
   }
 
-  // Modify article
-  function modifyArticle() {
-
-    // Build article object
-    const article = {
-      id: data.id,
-      description: description.trim(),
-      sold_price: sold_price,
-      family: family,
-      stock: stock,
-      quantity_min: quantity_min,
-      quantity_provided: quantity_provided,
-      wholesale_price: 50,
-      tax_id: tax_id,
-      last_update: new Date()
-    };
+  // Errors
+  function getErrors(description, sold_price, wholesale_price, stock, quantity_min, quantity_provided, tax_id) {
 
     const errors = [];
 
-    // Errors handling
-
     // Description
-    if (article.description === "" || article.description === null) {
+    if (description === "" || description === null) {
       errors.push("Description can't be empty");
     }
 
-    if (article.description.length > 50) {
+    if (description.length > 50) {
       errors.push("Description can't be longer than 50 characters");
     }
 
     // Sold price
-    if (article.sold_price === "") {
+    if (sold_price === "") {
       errors.push("Sold price can't be empty");
     }
 
-    if (article.sold_price < 0) {
+    if (sold_price < 0) {
       errors.push("Sold price can't be negative");
     }
-    
-    if (isNaN(article.sold_price)) {
-      errors.push("Sold price must be a number"); 
+
+    if (isNaN(sold_price)) {
+      errors.push("Sold price must be a number");
     }
 
     // Wholesale price
-    if (article.wholesale_price === "") {
+    if (wholesale_price === "") {
       errors.push("Wholesale price can't be empty");
     }
 
-    if (article.wholesale_price < 0) {
+    if (wholesale_price < 0) {
       errors.push("Wholesale price can't be negative");
     }
 
     // Production price
-    if (article.production_price === "") {
+    if (wholesale_price === "") {
       errors.push("Production price can't be empty");
     }
 
-    if (article.production_price < 0) {
+    if (wholesale_price < 0) {
       errors.push("Production price can't be negative");
     }
 
     // Stock
-    if (article.stock === "") {
+    if (stock === "") {
       errors.push("Stock can't be empty");
     }
 
-    if (article.stock < 0) {
+    if (stock < 0) {
       errors.push("Stock can't be negative");
     }
 
     // Quantity min
-    if (article.quantity_min === "") {
+    if (quantity_min === "") {
       errors.push("Quantity min can't be empty");
     }
 
-    if (article.quantity_min < 0) {
+    if (quantity_min < 0) {
       errors.push("Quantity min can't be negative");
     }
 
     // Quantity provided
-    if (article.quantity_provided === "") {
+    if (quantity_provided === "") {
       errors.push("Quantity provided can't be empty");
     }
 
-    if (article.quantity_provided < 0) {
+    if (quantity_provided < 0) {
       errors.push("Quantity provided can't be negative");
     }
+
+    return errors;
+  }
+
+  // Modify article
+  function modifyOrCreateArticle() {
+
+    var nArticle = article;
+
+    nArticle.description = nArticle.description.trim();
+
+    if (type === "adding") {
+      nArticle.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
+      nArticle.id = "000000";
+    } else {
+      nArticle.id = nArticle.id;
+    }
+
+    const errors = getErrors();
 
     // TODO : Make the errors more precise
     if (errors.length > 0) {
       errors.forEach(error => errorToast(error));
     } else {
-      const updateSuccess = () => toast("Article successfully updated !", { type: "success" });
-      updateArticle(article)
+      type === "adding" ? createArticle(nArticle) : updateArticle(nArticle);
       removeItemView();
-      updateSuccess();
+      successUpdate();
     }
   }
 
   return (
     <Modal>
       <div id="modify-view">
-        <h1 id="section-title">Modify article</h1>
+        <h1 id="section-title">{type === "adding" ? "Add" : "Modify"} article</h1>
 
         <div
           id="black-back"
@@ -156,7 +151,12 @@ export default function ModifyArticleView(props) {
               label="Description"
               value={data.description}
               tooltip={<>A description of the article. <br></br> Can't be empty</>}
-              onChange={(e) => { setDescription(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  description: e.target.value
+                }))
+              }}
             />
 
             <SelectField
@@ -165,12 +165,16 @@ export default function ModifyArticleView(props) {
               value={data.family}
               options={categories}
               tooltip={<>To add a family, go to the <Link className="link" to='/families'>Manage families</Link> page</>}
-              onChange={(e) => { setFamily(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  family: e.target.value
+                })) }}
             />
 
           </div>
-          <div className="field-line">
 
+          <div className="field-line">
 
             <NumberField
               for="sold_price"
@@ -181,7 +185,11 @@ export default function ModifyArticleView(props) {
               step="0.01"
               max="9999999"
               regex={/\d+\.\d{2}/}
-              onChange={(e) => { setSoldPrice(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  sold_price: e.target.value
+                })) }}
             />
 
             {<NumberField
@@ -193,7 +201,11 @@ export default function ModifyArticleView(props) {
               step="0.01"
               max="9999999"
               regex={/\d+\.\d{2}/}
-              onChange={(e) => { setWholesalePrice(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  wholesale_price: e.target.value
+                })) }}
             />}
 
             <SelectField
@@ -202,7 +214,11 @@ export default function ModifyArticleView(props) {
               value={data.tax_id}
               options={[{ id: 1, name: "TVA 20%" }, { id: 2, name: "TVA 10%" }]}
               tooltip={<>To add a tax, go to the <Link className="link" to='/taxes'>Manage taxes</Link> page</>}
-              onChange={(e) => { setTaxId(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  tax_id: e.target.value
+                })) }}
             />
           </div>
 
@@ -216,7 +232,11 @@ export default function ModifyArticleView(props) {
               min="0"
               step="1"
               regex={/^\+?(0|[1-9]\d*)$/}
-              onChange={(e) => { setStock(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  stock: e.target.value
+                })) }}
             />
 
             <NumberField
@@ -227,7 +247,11 @@ export default function ModifyArticleView(props) {
               min="0"
               step="1"
               regex={/^\+?(0|[1-9]\d*)$/}
-              onChange={(e) => { setQuantityMin(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  quantity_min: e.target.value
+                })) }}
             />
 
             <NumberField
@@ -238,24 +262,45 @@ export default function ModifyArticleView(props) {
               min="0"
               step="1"
               regex={/^\+?(0|[1-9]\d*)$/}
-              onChange={(e) => { setQuantityProvided(e.target.value) }}
+              onChange={(e) => {
+                setArticle(prevState => ({
+                  ...prevState,
+                  quantity_provided: e.target.value
+                })) }}
             />
           </div>
         </div>
 
         <div className="modify-buttons-list">
-          <button className="modify-button save-button" onClick={() => {
-            if (window.confirm("Are you sure you want to save changes ?")) {
-              modifyArticle()
-            }
-          }}>Save changes</button>
 
-          <button className="modify-button delete-button" onClick={() => {
-            if (window.confirm("Are you sure you want to delete this article ?")) {
-              deleteArticle()
+          <button className="modify-button save-button" onClick={() => {
+            if (type === "adding") {
+              if (window.confirm("Are you sure you want to add this article ?")) {
+                modifyOrCreateArticle()
+              }
+            } else {
+              if (window.confirm("Are you sure you want to save changes ?")) {
+                modifyOrCreateArticle()
+              }
             }
-          }}>Delete article</button>
+          }}>{type === "adding" ? "Add article" : "Save changes"}</button>
+
+          {type === "adding" ?
+            <button className="modify-button cancel-button" onClick={() => {
+              if (window.confirm("Are you sure you want to cancel ?")) {
+                removeItemView()
+              }
+            }}>Cancel</button>
+            :
+            <button className="modify-button delete-button" onClick={() => {
+              if (window.confirm("Are you sure you want to delete this article ?")) {
+                deleteArticle()
+              }
+            }}>Delete article</button>
+          }
+
         </div>
+
       </div>
     </Modal>
   );
