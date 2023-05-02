@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { Article } from './models/article.js'
 import { createCustomerModel } from './models/customer.js'
 
+
 const initialCustomersState = [] 
 
 function customersReducer(state = initialCustomersState, action) {
@@ -32,5 +33,9 @@ export default configureStore({
     reducer: {
         articles: Article.reducer,
         customers: customersReducer
-    }
+    },
+    middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })

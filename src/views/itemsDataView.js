@@ -13,7 +13,7 @@ export default function ItemsView(props) {
 
     // STATES
     const [loading, setLoading] = useState(true);
-    const [searchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     const [displayedData, setDisplayedData] = useState(data());
     const [recommended, setRecommended] = useState(false);
     const [showItem, setshowItem] = useState(false);
@@ -22,7 +22,7 @@ export default function ItemsView(props) {
     document.title = title;
 
     // DATA LOAD
-    async function loadData() {
+    async function LoadData() {
         await getAllArticles();
         setLoading(false);
     }
@@ -34,7 +34,7 @@ export default function ItemsView(props) {
             return;
         }
 
-        loadData();
+        LoadData();
     }, [title, data]);
 
 
@@ -73,6 +73,7 @@ export default function ItemsView(props) {
 
     // Search
     function handleSearch(searchTerm) {
+        setSearchTerm(searchTerm);
         Search(searchTerm);
     }
 
@@ -98,7 +99,7 @@ export default function ItemsView(props) {
                 }
                 return (<ModifyArticle
                     data={dataToPass}
-                    removeModal={() => { setshowItem(false); setAddItem(false) }}
+                    removeModal={() => { setshowItem(false); setAddItem(false); Search(searchTerm);}}
                     type={props.type}
                 />)
             default:

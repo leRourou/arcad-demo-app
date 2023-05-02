@@ -19,15 +19,15 @@ export class Article {
     return [
       { id: 1, name: "description", type: "string", displayName: "Article", display: true },
       { id: 2, name: "sold_price", type: "price", displayName: "Price", display: true },
-      { id: 3, name: "wholesale_price", type: "price", displayName: "Wholesale price", display: true },
+      { id: 3, name: "wholesale_price", type: "price", displayName: "Wholesale price", display: false },
       { id: 4, name: "family", type: "string", displayName: "Family", display: false },
       { id: 5, name: "stock", type: "number", displayName: "Stock", display: true },
-      { id: 6, name: "quantity_min", type: "number", displayName: "Min. quantity", display: true },
+      { id: 6, name: "quantity_min", type: "number", displayName: "Min. quantity", display: false },
       { id: 7, name: "quantity_ordered", type: "number", displayName: "Ordered quantity", display: false },
       { id: 8, name: "quantity_provided", type: "number", displayName: "Provided quantity", display: false },
       { id: 9, name: "tax_id", type: "string", displayName: "Tax ID", display: false },
       { id: 10, name: "creation_date", type: "date", displayName: "Creation date", display: false },
-      { id: 11, name: "last_update", type: "date", displayName: "Last update", display: false },
+      { id: 11, name: "last_update", type: "date", displayName: "Last update", display: true },
     ];
   }
 
@@ -48,6 +48,7 @@ export class Article {
     };
   }
 
+  // Reducer
   static reducer(state = [], action) {
     switch (action.type) {
       case 'LOAD_ARTICLES':

@@ -18,45 +18,76 @@ export function getArticleById(id) {
 }
 
 // Update Article
-export function updateArticle(article) {
+export async function updateArticle(article) {
+    article.last_update = new Date().toISOString()
     const newArticle = Article.reverse(article);
-    axios.put(api_endpoint + article.id, newArticle, {
-        headers: {
-            'Accept': '*/*',
-            'Content-Type': 'application/json'
+    try {
+        const response = axios.put(api_endpoint, newArticle, {
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        store.dispatch({ type: 'UPDATE_ARTICLE', payload: { article: newArticle } });
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } else {
+            return error;
         }
-    })
-        .then(store.dispatch({ type: 'UPDATE_ARTICLE', payload: { article: newArticle } }));
+    }
 }
 
 // Create Article
-export function createArticle(article) {
-    // TODO : remove this line
+export async function createArticle(article) {
     article.family = "511"
     article.tax_id = 2
 
-    // get the article with the highest id
-    store.getState().articles.forEach((item) => {
-        if (parseInt(item.id) > parseInt(article.id)) {
-            article.id = 0 + (parseInt(item.id) + 1).toString()
-        }
-    })
-    
+    article.id = generateNextId(store.getState().articles.map(article => article.id));
     const newArticle = Article.reverse(article);
-
-    axios.post(api_endpoint, newArticle, {
-        headers: {
-            'Accept': '*/*',
-            'Content-Type': 'application/json'
+    try {
+        const response = await axios.post(api_endpoint, newArticle, {
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        store.dispatch({ type: 'ADD_ARTICLE', payload: { article: new Article(newArticle) } });
+        
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } else {
+            return error;
         }
-    })
-    .then(
-        store.dispatch({ type: 'ADD_ARTICLE', payload: { article: new Article(newArticle) } })
-        )
+    }
 }
+
 
 // Delete Article
 export function deleteArticle(id) {
     return axios.delete(api_endpoint + id)
         .then(response => response.data);
 }
+
+function generateNextId(articleIds) {
+    let highestId = 0;
+    
+    // Find the highest ID in the array
+    for (let i = 0; i < articleIds.length; i++) {
+      let currentId = parseInt(articleIds[i], 10);
+      
+      if (currentId > highestId) {
+        highestId = currentId;
+      }
+    }
+    
+    // Increment the highest ID by one and format it as a six-digit string
+    let nextId = (highestId + 1).toString().padStart(6, '0');
+    
+    return nextId;
+  }

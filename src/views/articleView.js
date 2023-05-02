@@ -24,7 +24,7 @@ export default function ArticleView(props) {
   });
 
   // Add article
-  function addArticle() {
+  async function addArticle() {
     var nArticle = article;
     nArticle.description = nArticle.description.trim()
     nArticle.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
@@ -37,9 +37,25 @@ export default function ArticleView(props) {
       return;
     }
 
-    createArticle(nArticle)
-    removeModal();
-    successAdd(); // Display success toast
+    
+    createArticle(nArticle).then(
+      (response) => {
+
+        removeModal();
+
+        switch (response.status) {
+          case 201:
+            successAdd();
+            break;
+          case 400:
+            errorToast("An error occured while adding the article");
+            break;
+          default:
+            errorToast("An error occured while adding the article");
+            break;
+        }
+      }
+    )
   }
 
   // Modify article
@@ -55,9 +71,24 @@ export default function ArticleView(props) {
       return;
     }
 
-    await updateArticle(nArticle)
-    removeModal(); // Remove item view
-    successUpdate(); // Display success toast
+    updateArticle(nArticle).then(
+      (response) => {
+          removeModal();
+  
+          switch (response.status) {
+            case 204:
+              successUpdate();
+              break;
+            case 400:
+              errorToast("An error occured while updating the article");
+              break;
+            default:
+              errorToast("An error occured while updating the article");
+              break;
+          }
+        }
+    )
+
   }
 
 

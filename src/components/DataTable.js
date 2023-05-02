@@ -52,7 +52,7 @@ function DataTable(props) {
             <thead>
                 <tr>
                     {columnsToDisplay.map((column) => (
-                        <th className={column.type}  onClick={() => sortData(column.name)} key={column.id}>
+                        <th className={column.type} onClick={() => sortData(column.name)} key={column.id}>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                                 {column.displayName}
                                 {currentSort.column === column.name && currentSort.direction === sortTypes.desc && <p style={{ margin: "0px", marginLeft: "5px" }}>▼</p>}
@@ -76,7 +76,9 @@ function DataTable(props) {
             const column = columns.find((column) => column.name === key);
             switch (column.type) {
                 case "price":
-                    return <td style={{textAlign:"end"}} key={key}>{formatNumber(value)} €</td>;
+                    return <td style={{ textAlign: "end" }} key={key}>{formatNumber(value)} €</td>;
+                case "date":
+                    return <td key={key}>{formatDate(value)}</td>;
                 default:
                     return <td key={key}>{value}</td>;
             }
@@ -108,6 +110,10 @@ function DataTable(props) {
 
         // Sort the data according to the column type
         const sortedData = [...data].sort((a, b) => {
+
+            if (column.type === "date") {
+                return (new Date(a[sort.column]) - new Date(b[sort.column])) * sort.direction * -1;
+            }
             switch (typeof a[sort.column]) {
                 case "string":
                     return a[sort.column].localeCompare(b[sort.column]) * sort.direction;
@@ -151,30 +157,66 @@ function DataTable(props) {
 
 function formatNumber(num) {
     if (typeof num !== 'number') {
-      return '';
+        return '';
     }
-    
+
     var str = num.toString().replace(/[\s,]/g, '');
-    
+
     if (str.charAt(0) === '.') {
-      str = '0' + str;
+        str = '0' + str;
     }
-    
+
     var parts = str.split('.');
     var integerPart = parts[0];
     var decimalPart = parts.length > 1 ? '.' + parts[1] : '.00';
-    
+
     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    
+
     if (decimalPart.length > 3) {
-      decimalPart = parseFloat(decimalPart).toFixed(2);
+        decimalPart = parseFloat(decimalPart).toFixed(2);
     } else if (decimalPart.length === 2) {
-      decimalPart += '0';
+        decimalPart += '0';
     }
-    
+
     return integerPart + decimalPart;
-  }
-  
-  
+}
+
+
+function formatDate(isoDate) {
+    const now = new Date();
+    const date = new Date(isoDate);
+
+    const delta = now - date;
+
+    if (delta < 0) {
+        return "In the future";
+    }
+
+    if (delta < 60 * 1000) {
+        return "Just now";
+    }
+    if (delta < 60 * 60 * 1000) {
+        const minutes = Math.floor(delta / (60 * 1000));
+        return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    }
+    else if (delta < 24 * 60 * 60 * 1000) {
+        const hours = Math.floor(delta / (60 * 60 * 1000));
+        return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    }
+    else if (delta < 30 * 24 * 60 * 60 * 1000) {
+        const days = Math.floor(delta / (24 * 60 * 60 * 1000));
+        return `${days} day${days > 1 ? "s" : ""} ago`;
+    }
+    else if (delta < 365 * 24 * 60 * 60 * 1000) {
+        const months = Math.floor(delta / (30 * 24 * 60 * 60 * 1000));
+        return `${months} month${months > 1 ? "s" : ""} ago`;
+    }
+    else {
+        const years = Math.floor(delta / (365 * 24 * 60 * 60 * 1000));
+        return `${years} year${years > 1 ? "s" : ""} ago`;
+    }
+}
+
+
 
 export default DataTable;
