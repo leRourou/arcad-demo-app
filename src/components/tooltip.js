@@ -3,6 +3,14 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/perspective-subtle.css';
 
+/**
+ * @module Tooltip
+ * @category Components
+ * @description - This component is used to display a tooltip for the forms of the views
+ * @param {Object} props - The props of the component
+ * @returns {JSX.Element} - The tooltip component
+ */
+
 export default function Tooltip(props) {
     if (!props.content) return null
     const content = props.content;

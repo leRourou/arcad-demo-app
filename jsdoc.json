@@ -1,0 +1,30 @@
+{
+  "source": {
+    "include": [
+      "src",
+      "src/classes/models",
+      "src/services",
+      "src/components",
+      "src/classes",
+      "src/views"
+    ],
+    "exclude": [
+      "src/tests"
+    ]
+  },
+  "opts": {
+    "destination": "docs",
+    "template": "node_modules/better-docs"
+  },
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "plugins": [
+    "node_modules/better-docs/category",
+    "plugins/markdown"
+  ],
+  "markdown": {
+    "parser": "gfm",
+    "hardwrap": true
+  }
+}

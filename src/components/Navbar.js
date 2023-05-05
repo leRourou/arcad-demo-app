@@ -2,11 +2,16 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../style/navbar.scss';
 
+/**
+ * @module NavBar
+ * @category Components
+ * @description - This component is used to display the navigation bar.
+ * @param {Object} props - The props object containing the routes.
+ * @returns {JSX}
+ */
 export default function NavBar(props) {
 
     const items = props.routes;
-
-    // Get current location
     const location = useLocation();
 
     return (

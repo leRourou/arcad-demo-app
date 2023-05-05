@@ -6,11 +6,19 @@ import reportWebVitals from './reportWebVitals';
 import NavBar from './components/navbar.js';
 import store from './store.js'
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
+/**
+ * @module index
+ */
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+/**
+ * @type {Array<{name: string, link: string}>}
+ * @description - The routes of the application.
+ */
 const routes = [
   { name: "Home", link: "/" },
   { name: "Orders", link: "/orders" },
@@ -19,6 +27,10 @@ const routes = [
   { name: "About", link: "/about" }
 ];
 
+/**
+ * @description - The index component of the application. 
+ * @returns {JSX.Element} - The index component containeing the provider, browser router, navbar, toast container and the app component.
+ */
 root.render(
   <React.StrictMode>
     <BrowserRouter>

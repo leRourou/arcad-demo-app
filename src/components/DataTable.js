@@ -8,24 +8,35 @@ const sortTypes = {
     desc: 1
 }
 
+/**
+ * @module DataTable
+ * @category Components
+ * @description - This component is used to display a table of data.
+ * @param {Object} props - The props object containing the data, the columns, the onRowClick function and the maxResults.
+ */
 function DataTable(props) {
 
     // Props
-    const { columns, onRowClick, maxResults } = props;
-
+    const { onRowClick, maxResults, storeToUse } = props;
     // States
     const [data, setData] = useState(props.data);
+    const [columns, setColumns] = useState(props.columns);
     const [currentSort, setCurrentSort] = useState({ column: columns[0].name, direction: sortTypes.desc });
     const [currentPage, setCurrentPage] = useState(1);
+
+    console.log("props", props);
+
+    console.log("props", props);
 
     // Make the data reload when the search term changes
     useEffect(() => {
         setData(props.data);
+        setColumns(props.columns);
         setCurrentPage(1);
-    }, [props.data]);
+    }, [props.data, props.columns]);
 
     store.subscribe(() => {
-        setData(store.getState().articles);
+        setData(storeToUse);
     });
 
     // Redirect to the item page when clicking on a row
@@ -33,7 +44,10 @@ function DataTable(props) {
         onRowClick(id);
     }
 
-    // Display the number of results
+    /**
+     * @function nbResults - Display the number of results
+     * @returns {String} - The number of results
+     */
     function nbResults() {
         if (data.length === 0) {
             return "No results";
@@ -45,7 +59,10 @@ function DataTable(props) {
         }
     }
 
-    // Display the column names
+    /**
+     * @function displayColumns - Display the headers of the data table
+     * @returns {JSX} - The JSX code for the headers of the data table
+     */
     function displayColumns() {
         const columnsToDisplay = columns.filter(c => c.display)
         return (
@@ -65,13 +82,24 @@ function DataTable(props) {
         );
     }
 
-    // Display the data in the table
+
+    /**
+     * @function displayData - Display the data of the data table
+     * @param {Array} items - The data to display
+     * @returns {JSX} - The JSX code for the data table body
+     */
     function displayData(items) {
 
         // Display only the items that are on the current page
         const displayedItems = items.slice((currentPage - 1) * maxResults, (currentPage - 1) * maxResults + maxResults)
 
-        // Format the cell according to the column type (ex : price => add €)
+        /**
+         * @function
+         * @description - Format the cell according to the type of the column
+         * @param {number} key 
+         * @param {string} value 
+         * @returns {JSX} - The JSX code for the cell
+         */
         function formatCell(key, value) {
             const column = columns.find((column) => column.name === key);
             switch (column.type) {
@@ -83,6 +111,7 @@ function DataTable(props) {
                     return <td key={key}>{value}</td>;
             }
         }
+        
 
         return (
             <tbody>
@@ -101,7 +130,11 @@ function DataTable(props) {
         );
     }
 
-    // Sort data 
+    /**
+     * @function sortData - Sort the data according to the column
+     * @param {string} column 
+     * @returns {void}
+     */  
     function sortData(column) {
 
         var sort = {};

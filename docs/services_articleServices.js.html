@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> services/articleServices.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-App.html">App</a></li><li><a href="module-index.html">index</a></li><li><a href="module-store.html">store</a></li></ul></div><div class="category"><h2>Components</h2><h3>Modules</h3><ul><li><a href="module-DataTable.html">DataTable</a></li><li><a href="module-FormField.html">FormField</a></li><li><a href="module-Modal.html">Modal</a></li><li><a href="module-NavBar.html">NavBar</a></li><li><a href="module-SearchBar.html">SearchBar</a></li><li><a href="module-Tooltip.html">Tooltip</a></li></ul></div><div class="category"><h2>Models</h2><h3>Classes</h3><ul><li><a href="Article.html">Article</a></li><li><a href="ArticleInfo.html">ArticleInfo</a></li><li><a href="Country.html">Country</a></li><li><a href="Customer.html">Customer</a></li><li><a href="DetailOrder.html">DetailOrder</a></li><li><a href="Family.html">Family</a></li><li><a href="Order.html">Order</a></li><li><a href="Provider.html">Provider</a></li><li><a href="Vat.html">Vat</a></li></ul></div><div class="category"><h2>Services</h2><h3>Modules</h3><ul><li><a href="module-articleServices.html">articleServices</a></li><li><a href="module-toastsServices.html">toastsServices</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>services/articleServices.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+import store from '../store';
+import { Article } from '../classes/models/article';
+
+/**
+ * @description - This file contains the services related to the articles.
+ * @fileoverview - This file contains the services related to the articles.
+ * @category Services
+ * @module articleServices
+ * @requires axios
+ * @requires store
+ * @requires Article
+ */
+
+/**
+ * @type {string}
+ * @description - The API endpoint.
+ * @constant
+ */
+const api_endpoint = 'http://10.5.6.28:10010/web/services/articles/';
+
+/**
+ * @function
+ * @description - Get all articles from the API.
+ * @returns {Promise&lt;Array&lt;Article[]>>} - A promise that contains an array of articles.
+ */
+export function getAllArticles() {
+    return axios.get(api_endpoint + "?nb=10000")
+        .then(response => response.data.articles.map(article => new Article(article)))
+        .then(articles => store.dispatch({ type: 'LOAD_ARTICLES', payload: { data: articles } }))
+}
+
+/**
+ * @function
+ * @description - Get an article by its ID.
+ * @param {number} id 
+ * @returns {Promise&lt;Article>}
+ */
+export function getArticleById(id) {
+    return axios.get(api_endpoint + id)
+        .then(response => response.data);
+}
+
+/**
+ * @function
+ * @description - Update an article in the API.
+ * @param {Article} article 
+ * @returns {Promise&lt;number>} - The HTTP status code of the response. 
+ */
+export async function updateArticle(article) {
+    article.last_update = new Date().toISOString()
+    const newArticle = Article.reverse(article);
+    try {
+        const response = axios.put(api_endpoint, newArticle, {
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        store.dispatch({ type: 'UPDATE_ARTICLE', payload: { article: newArticle } });
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } else {
+            return error;
+        }
+    }
+}
+
+/**
+ * @function
+ * @description - Create an article in the API.
+ * @param {Article} article 
+ * @returns {Promise&lt;number>} - The HTTP status code of the response. 
+ */
+export async function createArticle(article) {
+    article.family = "511"
+    article.tax_id = 2
+
+    article.id = generateNextId(store.getState().articles.map(article => article.id));
+    const newArticle = Article.reverse(article);
+    try {
+        const response = await axios.post(api_endpoint, newArticle, {
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        store.dispatch({ type: 'ADD_ARTICLE', payload: { article: new Article(newArticle) } });
+        
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } else {
+            return error;
+        }
+    }
+}
+
+
+/**
+ * @function
+ * @description - Delete an article in the API.
+ * @param {number} id 
+ * @returns {Promise&lt;number>} - The HTTP status code of the response.
+ */
+export function deleteArticle(id) {
+    return axios.delete(api_endpoint + id)
+        .then(response => response.data);
+}
+
+/**
+ * @function
+ * @description - Generate the next ID for an article.
+ * @param {Array&lt;string>} articleIds - An array of article IDs.
+ * @returns {string} - The next ID for an article.
+ */
+function generateNextId(articleIds) {
+    let highestId = 0;
+    
+    // Find the highest ID in the array
+    for (let i = 0; i &lt; articleIds.length; i++) {
+      let currentId = parseInt(articleIds[i], 10);
+      
+      if (currentId > highestId) {
+        highestId = currentId;
+      }
+    }
+    
+    // Increment the highest ID by one and format it as a six-digit string
+    let nextId = (highestId + 1).toString().padStart(6, '0');
+    
+    return nextId;
+  }</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

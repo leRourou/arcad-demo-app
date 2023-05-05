@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import SearchBar from '../components/searchBar';
 import DataTable from '../components/dataTable.js';
 import Fuse from 'fuse.js'
 import ModifyArticle from './articleView';
 import Loading from '../views/misc/loadingView.js'
-import { getAllArticles } from '../services/articleServices.js'
 
 export default function ItemsView(props) {
 
     // PROPS
-    const { columns, title, data, singleTitle } = props;
+    const { columns, title, data, singleTitle, getAll } = props;
 
     // STATES
     const [loading, setLoading] = useState(true);
@@ -21,24 +20,26 @@ export default function ItemsView(props) {
 
     document.title = title;
 
-    // DATA LOAD
-    async function LoadData() {
-        await getAllArticles();
-        setLoading(false);
-    }
+    const Search = useCallback(SearchFunction, [data, columns, recommended]);
 
     useEffect(() => {
+        async function LoadData() {
+            await getAll()
+            setLoading(false);
+            Search("")
+        }
 
         if (data().length > 0) {
             setLoading(false);
+            Search("")
             return;
         }
 
         LoadData();
-    }, [title, data]);
+    }, [Search, data, getAll]);
 
 
-    function Search(search) {
+    function SearchFunction(search) {
         // If search term is empty, display all data
         if (search === "") {
             setDisplayedData(data());
@@ -99,7 +100,7 @@ export default function ItemsView(props) {
                 }
                 return (<ModifyArticle
                     data={dataToPass}
-                    removeModal={() => { setshowItem(false); setAddItem(false); Search(searchTerm);}}
+                    removeModal={() => { setshowItem(false); setAddItem(false); Search(searchTerm); }}
                     type={props.type}
                 />)
             default:
@@ -131,6 +132,7 @@ export default function ItemsView(props) {
                 onRowClick={(id) => {
                     setshowItem(id)
                 }}
+                storeToUse={data}
                 maxResults={50}
             />
 

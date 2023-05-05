@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> classes/models/provider.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-App.html">App</a></li><li><a href="module-index.html">index</a></li><li><a href="module-store.html">store</a></li></ul></div><div class="category"><h2>Components</h2><h3>Modules</h3><ul><li><a href="module-DataTable.html">DataTable</a></li><li><a href="module-FormField.html">FormField</a></li><li><a href="module-Modal.html">Modal</a></li><li><a href="module-NavBar.html">NavBar</a></li><li><a href="module-SearchBar.html">SearchBar</a></li><li><a href="module-Tooltip.html">Tooltip</a></li></ul></div><div class="category"><h2>Models</h2><h3>Classes</h3><ul><li><a href="Article.html">Article</a></li><li><a href="ArticleInfo.html">ArticleInfo</a></li><li><a href="Country.html">Country</a></li><li><a href="Customer.html">Customer</a></li><li><a href="DetailOrder.html">DetailOrder</a></li><li><a href="Family.html">Family</a></li><li><a href="Order.html">Order</a></li><li><a href="Provider.html">Provider</a></li><li><a href="Vat.html">Vat</a></li></ul></div><div class="category"><h2>Services</h2><h3>Modules</h3><ul><li><a href="module-articleServices.html">articleServices</a></li><li><a href="module-toastsServices.html">toastsServices</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>classes/models/provider.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents a provider.
+ * @class
+ * @category Models
+ * @property {number} id - The provider ID.
+ * @property {string} name - The provider name.
+ * @property {string} cont - The provider contact.
+ * @property {string} phone - The provider phone.
+ * @property {string} vat - The provider {@link VAT}.
+ * @property {string} mail - The provider mail.
+ * @property {string} address - The provider address line 1.
+ * @property {string} adress2 - The provider address line 2.
+ * @property {string} adress3 - The provider address line 3.
+ * @property {string} zip - The provider zip code.
+ * @property {string} city - The provider city.
+ * @property {string} country - The provider {@link Country}.
+ * @property {Date} creation_date - The provider creation date.
+ * @property {TimeStamp} last_update - The provider last update date.
+ * @property {number} last_updater - The provider last updater.
+ * @property {Date} delete_date - The provider delete date.
+ */
+export class Provider {
+    /**
+     * @constructor
+     * @param {Object} provider 
+     * @description - This constructor is used to create a provider object.
+     */
+    constructor(provider) {
+        this.id = provider.PRID;
+        this.name = provider.PROVNM;
+        this.cont = provider.PROVCONT;
+        this.phone = provider.PRPHONE;
+        this.vat = provider.PROVVAT;
+        this.mail = provider.PRMAIL;
+        this.address = provider.PRLINE1;
+        this.adress2 = provider.PRLINE2;
+        this.adress3 = provider.PRLINE3;
+        this.zip = provider.PRZIP;
+        this.city = provider.PRCITY;
+        this.country = provider.PRCOUN;
+        this.creation_date = provider.PRCREA;
+        this.last_update = provider.PRMOD;
+        this.last_updater = provider.PRMODID;
+        this.delete_date = provider.PRDEL;
+    }
+
+    /**
+     * @method
+     * @param {Provider} provider - A provider object to convert.
+     * @returns {Object} - The provider data in the format required by the API.
+     * @description - This method is used to convert a provider object into the format required by the API.
+     */
+    static reverse(provider) {
+        return {
+            PRID: provider.id,
+            PROVNM : provider.name,
+            PROVCONT : provider.cont,
+            PRPHONE : provider.phone,
+            PROVVAT : provider.vat,
+            PRMAIL : provider.mail,
+            PRLINE1 : provider.address,
+            PRLINE2 : provider.adress2,
+            PRLINE3 : provider.adress3,
+            PRZIP : provider.zip,
+            PRCITY : provider.city,
+            PRCOUN : provider.country,
+            PRCREA : provider.creation_date,
+            PRMOD : provider.last_update,
+            PRMODID : provider.last_updater,
+            PRDEL : provider.delete_date
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

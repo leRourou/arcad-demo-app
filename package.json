@@ -16,10 +16,12 @@
     "react-redux": "^8.0.5",
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
+    "react-router-native": "^6.11.1",
     "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.2",
     "redux": "^4.2.1",
     "sass": "^1.62.0",
+    "taffydb": "^2.7.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -50,6 +52,9 @@
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
     "babel-loader": "^9.1.2",
+    "better-docs": "^2.7.2",
+    "jest": "^27.5.1",
+    "jsdoc": "^4.0.2",
     "webpack": "^5.80.0"
   }
 }

@@ -1,5 +1,12 @@
 import { toast } from 'react-toastify';
 
+/**
+ * @module toastsServices
+ * @category Services
+ * @description - This module contains the toasts services of the application.
+ * @import toast from 'react-toastify';
+ */
+
 const errorToast = (error) => {
     toast(error, { type: "error" });
 }

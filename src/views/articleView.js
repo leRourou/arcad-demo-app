@@ -5,8 +5,15 @@ import Modal from '../components/modal.js';
 import { Link } from "react-router-dom";
 import { updateArticle, createArticle } from "../services/articleServices";
 import { successDelete, errorToast, successUpdate, successAdd } from "../services/toastsServices";
-import { Article } from "../models/article.js";
+import { Article } from "../classes/models/article.js";
 
+
+/**
+ * Article view
+ * @category Views
+ * @param {props} props
+ * @returns The JSX code for the article view
+ */
 export default function ArticleView(props) {
 
   const { removeModal, categories, type, data } = props;
@@ -37,7 +44,7 @@ export default function ArticleView(props) {
       return;
     }
 
-    
+
     createArticle(nArticle).then(
       (response) => {
 
@@ -73,20 +80,20 @@ export default function ArticleView(props) {
 
     updateArticle(nArticle).then(
       (response) => {
-          removeModal();
-  
-          switch (response.status) {
-            case 204:
-              successUpdate();
-              break;
-            case 400:
-              errorToast("An error occured while updating the article");
-              break;
-            default:
-              errorToast("An error occured while updating the article");
-              break;
-          }
+        removeModal();
+
+        switch (response.status) {
+          case 204:
+            successUpdate();
+            break;
+          case 400:
+            errorToast("An error occured while updating the article");
+            break;
+          default:
+            errorToast("An error occured while updating the article");
+            break;
         }
+      }
     )
 
   }

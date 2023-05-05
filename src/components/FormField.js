@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Tooltip from './tooltip';
 
-// Form field component
+/**
+ * @module FormField
+ * @category Components
+ * @description - This component is used to display a form field. It can be a text field, a number field, a date field or a select field.
+ * @param {Array} props - The props of the component
+ * @returns {JSX.Element} - The form field component
+ */
 function FormField(props) {
-
 
 	const { forHtml, label, value, tooltip, inputType, onChange, options, step, min, max, regex } = props;
 	const [fieldValue, setFieldValue] = useState(value);
@@ -14,6 +19,10 @@ function FormField(props) {
 		setFieldValue(value);
 	}, [value]);
 
+	/**
+	 * @description - This function renders the form field component.
+	 * @returns {JSX.Element} - The form field component
+	 */
 	function renderSwitch() {
 		switch (inputType) {
 			case "select":
