@@ -27,18 +27,29 @@ function FormField(props) {
 		switch (inputType) {
 			case "select":
 				return (
-					<select
-						className='modify-select'
-						value={fieldValue}
-						onChange={
-							e => setFieldValue(e.target.value)
+				  <select
+					className='modify-select'
+					value={value}
+					onChange={
+						e => {
+							setFieldValue(e.target.value);
+							onChange && onChange(e);
 						}
-					>
-						{options && options.map((option) => (
-							<option key={option.id} value={option.name}>{option.name}</option>
-						))}
-					</select>
+					}
+				  >
+					{options &&
+					  options.map(option => (
+						<option
+						  key={option.id}
+						  value={option.id}
+						>
+						  {option.value}
+						</option>
+					  ))}
+				  </select>
 				);
+			  
+			  
 
 			case "textarea":
 				return (
@@ -190,7 +201,6 @@ export function TextAreaField(props) {
 // Select component
 export function SelectField(props) {
 	const { forHtml, label, value, options, tooltip } = props;
-
 	return (
 		<FormField
 			forHtml={forHtml}

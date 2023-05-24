@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../style/data-table.scss";
-import store from "../store";
-
-// Enum for the sort directions
-const sortTypes = {
-    asc: -1,
-    desc: 1
-}
 
 /**
  * @module DataTable
@@ -14,49 +7,18 @@ const sortTypes = {
  * @description - This component is used to display a table of data.
  * @param {Object} props - The props object containing the data, the columns, the onRowClick function and the maxResults.
  */
-function DataTable(props) {
+export default function DataTable(props) {
 
     // Props
-    const { onRowClick, maxResults, storeToUse } = props;
+    const { onRowClick } = props;
+
     // States
-    const [data, setData] = useState(props.data);
-    const [columns, setColumns] = useState(props.columns);
-    const [currentSort, setCurrentSort] = useState({ column: columns[0].name, direction: sortTypes.desc });
-    const [currentPage, setCurrentPage] = useState(1);
-
-    console.log("props", props);
-
-    console.log("props", props);
-
-    // Make the data reload when the search term changes
-    useEffect(() => {
-        setData(props.data);
-        setColumns(props.columns);
-        setCurrentPage(1);
-    }, [props.data, props.columns]);
-
-    store.subscribe(() => {
-        setData(storeToUse);
-    });
+    const [data] = useState(props.data);
+    const [columns] = useState(props.columns);
 
     // Redirect to the item page when clicking on a row
     function handleRowClick(id) {
         onRowClick(id);
-    }
-
-    /**
-     * @function nbResults - Display the number of results
-     * @returns {String} - The number of results
-     */
-    function nbResults() {
-        if (data.length === 0) {
-            return "No results";
-        }
-        else if (data.length > 1) {
-            return data.length + " correspondances";
-        } else {
-            return "1 correspondance";
-        }
     }
 
     /**
@@ -69,11 +31,9 @@ function DataTable(props) {
             <thead>
                 <tr>
                     {columnsToDisplay.map((column) => (
-                        <th className={column.type} onClick={() => sortData(column.name)} key={column.id}>
+                        <th className={column.type} key={column.name}>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                                 {column.displayName}
-                                {currentSort.column === column.name && currentSort.direction === sortTypes.desc && <p style={{ margin: "0px", marginLeft: "5px" }}>▼</p>}
-                                {currentSort.column === column.name && currentSort.direction === sortTypes.asc && <p style={{ margin: "0px", marginLeft: "5px" }}>▲</p>}
                             </div>
                         </th>
                     ))}
@@ -85,14 +45,9 @@ function DataTable(props) {
 
     /**
      * @function displayData - Display the data of the data table
-     * @param {Array} items - The data to display
      * @returns {JSX} - The JSX code for the data table body
      */
-    function displayData(items) {
-
-        // Display only the items that are on the current page
-        const displayedItems = items.slice((currentPage - 1) * maxResults, (currentPage - 1) * maxResults + maxResults)
-
+    function displayData() {
         /**
          * @function
          * @description - Format the cell according to the type of the column
@@ -106,23 +61,22 @@ function DataTable(props) {
                 case "price":
                     return <td style={{ textAlign: "end" }} key={key}>{formatNumber(value)} €</td>;
                 case "date":
-                    return <td key={key}>{formatDate(value)}</td>;
+                    return <td key={key}>{formatDate(new Date(value))}</td>;
+                case "strDate":
+                    return <td key={key}>{formatDate(strToDate(value))}</td>;
                 default:
                     return <td key={key}>{value}</td>;
             }
         }
-        
 
         return (
             <tbody>
-                {displayedItems.map((item) => (
+                {data.map((item) => (
                     <tr key={item.id} onClick={() => handleRowClick(item.id)}>
                         {
-                            // Display only the columns that have the display property on TRUE and that are not the id
-                            Object.entries(item)
-                                .filter(([key]) => key !== "id")
-                                .filter(([key]) => columns.find((column) => column.name === key).display)
-                                .map(([key, value]) => formatCell(key, value))
+                            columns.filter(c => c.display).map((column) => (
+                                formatCell(column.name, item[column.name])
+                            ))
                         }
                     </tr>
                 ))}
@@ -130,60 +84,14 @@ function DataTable(props) {
         );
     }
 
-    /**
-     * @function sortData - Sort the data according to the column
-     * @param {string} column 
-     * @returns {void}
-     */  
-    function sortData(column) {
-
-        var sort = {};
-        sort.column = column;
-        sort.direction = currentSort.direction === sortTypes.asc ? sortTypes.desc : sortTypes.asc;
-
-        // Sort the data according to the column type
-        const sortedData = [...data].sort((a, b) => {
-
-            if (column.type === "date") {
-                return (new Date(a[sort.column]) - new Date(b[sort.column])) * sort.direction * -1;
-            }
-            switch (typeof a[sort.column]) {
-                case "string":
-                    return a[sort.column].localeCompare(b[sort.column]) * sort.direction;
-                case "number":
-                    return (a[sort.column] - b[sort.column]) * sort.direction * -1;
-                default:
-                    return 0;
-            }
-        });
-
-        setCurrentSort(sort);
-        setData(sortedData)
-    }
-
-
     return (
         <div>
-            <p id="search-results-text">{nbResults()}</p>
             <table>
                 {displayColumns()}
                 {displayData(data)}
             </table>
             <div id="table-footer"></div>
             <br></br>
-            <div id="buttons-page-container">
-
-                <p>Showing {(currentPage - 1) * maxResults + 1}-{currentPage < Math.ceil(data.length / maxResults) ? (currentPage - 1) * maxResults + maxResults : data.length} out of {data.length} results</p>
-
-                <button className="button-page" onClick={() => {
-                    if (currentPage > 1)
-                        setCurrentPage(currentPage - 1)
-                }}>Previous page</button>
-                <button className="button-page" onClick={() => {
-                    if (currentPage < Math.ceil(data.length / maxResults))
-                        setCurrentPage(currentPage + 1)
-                }}>Next page</button>
-            </div>
         </div>
     );
 }
@@ -215,11 +123,10 @@ function formatNumber(num) {
 }
 
 
-function formatDate(isoDate) {
+function formatDate(dateToFormat) {
     const now = new Date();
-    const date = new Date(isoDate);
 
-    const delta = now - date;
+    const delta = now - dateToFormat;
 
     if (delta < 0) {
         return "In the future";
@@ -250,6 +157,13 @@ function formatDate(isoDate) {
     }
 }
 
+function strToDate(str) {
+    var date = new Date();
+    str = str.toString();
+    date.setFullYear(str.substring(0, 4));
+    date.setMonth(str.substring(5, 7));
+    date.setDate(str.substring(8, 10));
+    return date;
+}
 
-
-export default DataTable;
+  

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import store from '../store';
 import { Familly } from '../classes/models/familly';
 
 /**
@@ -24,10 +23,9 @@ const api_endpoint = 'http://10.5.6.28:10010/web/services/families/';
  * @description - Get all families from the API.
  * @returns {Promise<Array<Familly>>} - A promise that contains an array of families.
  */
-export function getAllFamilies() {
-    return axios.get(api_endpoint + "?nb=10000")
+export function getAllFamilies(nb, search, page ) {
+    return axios.get(api_endpoint + `?nb=${nb}&search=${search}&page=${page}`)
         .then(response => response.data.families.map(familly => new Familly(familly)))
-        .then(families => store.dispatch({ type: 'LOAD_CUSTOMERS', payload: { data: families } }))
 }
 
 /**
@@ -38,7 +36,7 @@ export function getAllFamilies() {
  */
 export function getFamillyById(id) {
     return axios.get(api_endpoint + id)
-        .then(response => response.data);
+        .then(response => new Familly(response.data.familly));
 }
 
 /**
@@ -49,16 +47,11 @@ export function getFamillyById(id) {
  */
 
 export async function updateFamilly(familly) {
-    const newFamilly = Familly.reverse(familly);
+    familly.last_modification = new Date().toISOString()
+    familly.id = parseInt(familly.id);
+    const newFamilly = Familly.toAPIFormat(familly);
     try {
-        const response = axios.put(api_endpoint, newFamilly, {
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        store.dispatch({ type: 'UPDATE_FAMILLY', payload: { customer: newFamilly } });
+        const response = axios.put(api_endpoint, newFamilly);
         return response;
     } catch (error) {
         if (error.response) {
@@ -76,19 +69,12 @@ export async function updateFamilly(familly) {
  * @returns {Promise<number>} - The HTTP status code of the response. 
  */
 export async function createFamilly(familly) {
-
-    familly.id = generateNextId(store.getState().families.map(familly => familly.id));
-    const newFamilly = Familly.reverse(familly);
+    familly.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
+    familly.id = parseInt(await getMaxID()) + 1;
+    const newFamilly = Familly.toAPIFormat(familly);
     try {
-        const response = await axios.post(api_endpoint, newFamilly, {
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        store.dispatch({ type: 'ADD_CUSTOMER', payload: { customer: new Familly(newFamilly) } });
-        
+        const response = await axios.post(api_endpoint, newFamilly);
+                
         return response;
     } catch (error) {
         if (error.response) {
@@ -108,29 +94,17 @@ export async function createFamilly(familly) {
  */
 export function deleteFamilly(id) {
     return axios.delete(api_endpoint + id)
-        .then(response => response.data);
+        .then(response => response);
 }
 
-/**
- * @function
- * @description - Generate the next ID for a familly.
- * @param {Array<string>} familyIds - An array of families IDs.
- * @returns {string} - The next ID for a familly.
- */
-function generateNextId(familyIds) {
-    let highestId = 0;
-    
-    // Find the highest ID in the array
-    for (let i = 0; i < familyIds.length; i++) {
-      let currentId = parseInt(familyIds[i], 10);
-      
-      if (currentId > highestId) {
-        highestId = currentId;
-      }
-    }
-    
-    // Increment the highest ID by one and format it as a six-digit string
-    let nextId = (highestId + 1).toString().padStart(6, '0');
-    
-    return nextId;
-  }
+// TODO : documentation
+export function getMaxID() {
+    return axios.get(api_endpoint + `max`)
+        .then(response => response.data.max)
+}
+
+// TODO : documentation
+export function getLengthFamilies() {
+    return axios.get(api_endpoint + `length`)
+        .then(response => response.data.length)
+}

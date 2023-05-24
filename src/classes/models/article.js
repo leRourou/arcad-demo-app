@@ -21,39 +21,64 @@ export class Article {
    * @constructor
    * @param {Object} article - The article data as an object just like it is in the database.
    */
+
   constructor(article) {
-    this.id = article.ARID;
-    this.description = article.ARDESC;
-    this.sold_price = article.ARSALEPR;
-    this.wholesale_price = article.ARWHSPR;
-    this.family_id = article.ARTIFA;
-    this.stock = article.ARSTOCK;
-    this.quantity_min = article.ARMINQTY;
-    this.quantity_ordered = article.ARCUSQTY;
-    this.quantity_provided = article.ARPURQTY;
-    this.tax_id = article.ARVATCD;
-    this.creation_date = article.ARCREA;
-    this.last_update = article.ARMOD;
+    this.id = article.ID;
+    this.description = article.DESCRIPTION;
+    this.sold_price = article.SALE_PRICE;
+    this.wholesale_price = article.WHOLESALE_PRICE;
+    this.familly_id = article.FAMILLY_ID;
+    this.stock = article.STOCK;
+    this.quantity_min = article.MINIMUM_QUANTITY;
+    this.quantity_ordered = article.CUSTOMER_QUANTITY;
+    this.quantity_provided = article.PURCHASE_QUANTITY;
+    this.tax_id = article.VAT_ID;
+    this.creation_date = article.CREATION_DATE;
+    this.last_update = article.LAST_MODIFICATION;
+    this.last_modifier = article.LAST_MODIFIER_ID;
+    this.deleted = article.DELETED;
   }
+
+  // Overriding constructor to create an empty article.
+  static empty() {
+    return new Article({
+      id : null,
+      description : null,
+      sold_price : null,
+      wholesale_price : null,
+      familly_id : null,
+      stock : null,
+      quantity_min : null,
+      quantity_ordered : null,
+      quantity_provided : null,
+      tax_id : null,
+      creation_date : null,
+      last_update : null,
+      last_modifier : null,
+      deleted : null
+    });
+  }
+  
 
   /**
    * @method
    * @description Gives the columns of the article for the DataTable component.
-   * @returns {Array<{id, name, type, displayName, display}>} - The columns of the article.
+   * @returns {Array<{name, type, displayName, display}>} - The columns of the article.
    */
   static get columns() {
     return [
-      { id: 1, name: "description", type: "string", displayName: "Article", display: true },
-      { id: 2, name: "sold_price", type: "price", displayName: "Price", display: true },
-      { id: 3, name: "wholesale_price", type: "price", displayName: "Wholesale price", display: false },
-      { id: 4, name: "family_id", type: "string", displayName: "Family", display: false },
-      { id: 5, name: "stock", type: "number", displayName: "Stock", display: true },
-      { id: 6, name: "quantity_min", type: "number", displayName: "Min. quantity", display: false },
-      { id: 7, name: "quantity_ordered", type: "number", displayName: "Ordered quantity", display: false },
-      { id: 8, name: "quantity_provided", type: "number", displayName: "Provided quantity", display: false },
-      { id: 9, name: "tax_id", type: "string", displayName: "Tax ID", display: false },
-      { id: 10, name: "creation_date", type: "date", displayName: "Creation date", display: false },
-      { id: 11, name: "last_update", type: "date", displayName: "Last update", display: true },
+      { name: "id", type: "number", displayName: "ID", display: true },
+      { name: "description", type: "string", displayName: "Articles", display: true },
+      { name: "sold_price", type: "price", displayName: "Price", display: true },
+      { name: "wholesale_price", type: "price", displayName: "Wholesale price", display: true },
+      { name: "familly_id", type: "string", displayName: "Family", display: false },
+      { name: "stock", type: "number", displayName: "Stock", display: true },
+      { name: "quantity_min", type: "number", displayName: "Min. quantity", display: false },
+      { name: "quantity_ordered", type: "number", displayName: "Ordered quantity", display: false },
+      { name: "quantity_provided", type: "number", displayName: "Provided quantity", display: false },
+      { name: "tax_id", type: "string", displayName: "Tax ID", display: false },
+      { name: "creation_date", type: "date", displayName: "Creation date", display: false },
+      { name: "last_update", type: "date", displayName: "Last update", display: true }
     ];
   }
 
@@ -63,55 +88,26 @@ export class Article {
    * @returns {Object} - The article data in the format required by the API.
    * @description - This method is used to convert an article object into the format required by the API.
    */
-  
-  static reverse(article) {
+
+  static toAPIFormat(article) {
     return {
-      ARID: article.id,
-      ARVATCD: article.tax_id,
-      ARDESC: article.description,
-      ARSALEPR: parseFloat(article.sold_price),
-      ARWHSPR: parseFloat(article.wholesale_price),
-      ARTIFA: article.family,
-      ARSTOCK: parseInt(article.stock),
-      ARMINQTY: parseInt(article.quantity_min),
-      ARCUSQTY: article.quantity_ordered ? parseInt(article.quantity_ordered) : 0,
-      ARPURQTY: parseInt(article.quantity_provided),
-      ARCREA: article.creation_date,
-      ARMOD: article.last_update,
-    };
-  }
-
-  /** 
-  * @method
-  * @param {Array} state - The current state of the store article
-  * @param {Redux.Action} action - The action to be performed on the store article
-  * @returns {Redux.Store} - The new state of the store article
-  * @description - This method is used to update the Redux store article according to the action performed (CRUD)
-  */
-  static reducer(state = [], action) {
-    switch (action.type) {
-      case 'LOAD_ARTICLES':
-        return action.payload.data
-
-      case 'ADD_ARTICLE':
-        return [...state, action.payload.article]
-
-      case 'UPDATE_ARTICLE':
-        return state.map((item) => {
-          if (item.id === action.payload.article.ARID) {
-            return new Article(action.payload.article)
-          }
-          return item
-        })
-
-      case 'DELETE_ARTICLE':
-        return state.filter((item) => item.id !== action.payload.id)
-
-      default:
-        return state
+      ID: article.id,
+      DESCRIPTION: article.description,
+      SALE_PRICE: article.sold_price,
+      WHOLESALE_PRICE: article.wholesale_price,
+      FAMILLY_ID: article.familly_id,
+      STOCK: article.stock,
+      MINIMUM_QUANTITY: article.quantity_min,
+      CUSTOMER_QUANTITY: article.quantity_ordered,
+      PURCHASE_QUANTITY: article.quantity_provided,
+      VAT_ID: article.tax_id,
+      CREATION_DATE: article.creation_date,
+      LAST_MODIFICATION: article.last_update,
+      LAST_MODIFIER_ID: article.last_modifier,
+      DELETED: article.deleted,
     }
   }
-
+  
   /**
    * @method 
    * @param {Article} article 

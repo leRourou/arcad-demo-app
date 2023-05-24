@@ -4,8 +4,6 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import NavBar from './components/navbar.js';
-import store from './store.js'
-import { Provider } from 'react-redux'
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -24,6 +22,9 @@ const routes = [
   { name: "Orders", link: "/orders" },
   { name: "Articles", link: "/articles" },
   { name: "Customers", link: "/customers" },
+  { name: "Providers", link: "/providers" },
+  { name: "Countries", link: "/countries" },
+  { name: "VAT", link: "/vat" },
   { name: "About", link: "/about" }
 ];
 
@@ -34,14 +35,12 @@ const routes = [
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Provider store={store}>
         <NavBar routes={routes} />
         <ToastContainer 
-        hideProgressBar
-        theme="colored"
+          hideProgressBar
+          theme="colored"
         />
         <App />
-      </Provider>
     </BrowserRouter>
   </React.StrictMode>
 );

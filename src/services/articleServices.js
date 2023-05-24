@@ -1,6 +1,6 @@
 import axios from 'axios';
-import store from '../store';
 import { Article } from '../classes/models/article';
+import api from './api.json';
 
 /**
  * @description - This file contains the services related to the articles.
@@ -8,26 +8,19 @@ import { Article } from '../classes/models/article';
  * @category Services
  * @module articleServices
  * @requires axios
- * @requires store
  * @requires Article
  */
 
-/**
- * @type {string}
- * @description - The API endpoint.
- * @constant
- */
-const api_endpoint = 'http://10.5.6.28:10010/web/services/articles/';
+const api_endpoint = api.endpoint + 'articles/';
 
 /**
  * @function
  * @description - Get all articles from the API.
  * @returns {Promise<Array<Article>>} - A promise that contains an array of articles.
  */
-export function getAllArticles() {
-    return axios.get(api_endpoint + "?nb=10000")
+export function getAllArticles(nb, search, page ) {
+    return axios.get(api_endpoint + `?nb=${nb}&search=${search}&page=${page}`)
         .then(response => response.data.articles.map(article => new Article(article)))
-        .then(articles => store.dispatch({ type: 'LOAD_ARTICLES', payload: { data: articles } }))
 }
 
 /**
@@ -38,7 +31,7 @@ export function getAllArticles() {
  */
 export function getArticleById(id) {
     return axios.get(api_endpoint + id)
-        .then(response => response.data);
+        .then(response => new Article(response.data.article));
 }
 
 /**
@@ -49,16 +42,9 @@ export function getArticleById(id) {
  */
 export async function updateArticle(article) {
     article.last_update = new Date().toISOString()
-    const newArticle = Article.reverse(article);
+    const newArticle = Article.toAPIFormat(article);
     try {
-        const response = axios.put(api_endpoint, newArticle, {
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        store.dispatch({ type: 'UPDATE_ARTICLE', payload: { article: newArticle } });
+        const response = axios.put(api_endpoint, newArticle);
         return response;
     } catch (error) {
         if (error.response) {
@@ -76,21 +62,13 @@ export async function updateArticle(article) {
  * @returns {Promise<number>} - The HTTP status code of the response. 
  */
 export async function createArticle(article) {
-    article.family = "511"
-    article.tax_id = 2
-
-    article.id = generateNextId(store.getState().articles.map(article => article.id));
-    const newArticle = Article.reverse(article);
+    article.tax_id = 2;
+    const maxId = await getMaxID();
+    article.id = (parseInt(maxId) + 1).toString();
+    article.last_update = new Date().toISOString()
+    const newArticle = Article.toAPIFormat(article);
     try {
-        const response = await axios.post(api_endpoint, newArticle, {
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        store.dispatch({ type: 'ADD_ARTICLE', payload: { article: new Article(newArticle) } });
-        
+        const response = await axios.post(api_endpoint, newArticle);
         return response;
     } catch (error) {
         if (error.response) {
@@ -101,6 +79,25 @@ export async function createArticle(article) {
     }
 }
 
+// TODO : documentation
+export function getDescription(id) {
+    return axios.get(api.endpoint + `artdesc/${id}`)
+        .then(response => response.data.ArticleDesc)
+}
+
+// TODO : documentation
+export function updateDescription(description) {
+    try {
+        const response = axios.put(api.endpoint + `artdesc`, description);
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } else {
+            return error;
+        }
+    }
+}
 
 /**
  * @function
@@ -109,30 +106,24 @@ export async function createArticle(article) {
  * @returns {Promise<number>} - The HTTP status code of the response.
  */
 export function deleteArticle(id) {
+    axios.delete(api.endpoint + 'artdesc/' + id)
     return axios.delete(api_endpoint + id)
-        .then(response => response.data);
 }
 
-/**
- * @function
- * @description - Generate the next ID for an article.
- * @param {Array<string>} articleIds - An array of article IDs.
- * @returns {string} - The next ID for an article.
- */
-function generateNextId(articleIds) {
-    let highestId = 0;
-    
-    // Find the highest ID in the array
-    for (let i = 0; i < articleIds.length; i++) {
-      let currentId = parseInt(articleIds[i], 10);
-      
-      if (currentId > highestId) {
-        highestId = currentId;
-      }
-    }
-    
-    // Increment the highest ID by one and format it as a six-digit string
-    let nextId = (highestId + 1).toString().padStart(6, '0');
-    
-    return nextId;
-  }
+// TODO : documentation
+export function getArticlesByProviders(providerID) {
+    return axios.get(api_endpoint + `provider/${providerID}`)
+        .then(response => response.data.providers)
+}
+
+// TODO : documentation
+export function getMaxID() {
+    return axios.get(api_endpoint + `max`)
+        .then(response => response.data.max)
+}
+
+// TODO : documentation
+export function getLengthArticles() {
+    return axios.get(api_endpoint + `length`)
+        .then(response => response.data.length)
+}

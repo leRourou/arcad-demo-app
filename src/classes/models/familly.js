@@ -19,13 +19,37 @@ export class Familly {
      * @description - This constructor is used to convert a familly object into the format required by the API.
      */
     constructor(familly) {
-        this.id = familly.FAID;
-        this.description = familly.FADESC;
-        this.tcd = familly.FATCD; // ???
-        this.creation_date = familly.FACREA;
-        this.last_update = familly.FAMOD;
-        this.odid = familly.FAODID; 
-        this.total_vat = familly.FATOTVAT;
+        this.id = familly.ID;
+        this.description = familly.DESCRIPTION;
+        this.vat_id = familly.VAT_ID;
+        this.creation_date = familly.CREATION_DATE;
+        this.last_modification = familly.LAST_MODIFICATION;
+        this.last_modifier_id = familly.LAST_MODIFIER_ID; 
+        this.deleted = familly.DELETED;
+    }
+
+    static get columns() {
+        return [
+            { name: "id", type: "number", displayName: "ID", display: true },
+            { name: "description", type: "string", displayName: "Description", display: true },
+            { name: "vat_id", type: "string", displayName: "VAT ID", display: false },
+            { name: "creation_date", type: "date", displayName: "Creation Date", display: false },
+            { name: "last_modification", type: "date", displayName: "Last Modification", display: true },
+            { name: "last_modifier_id", type: "string", displayName: "Last Modifier ID", display: false },
+            { name: "deleted", type: "string", displayName: "Deleted", display: false }
+        ]
+    }
+
+    static empty() {
+        return {
+            id: null,
+            description: null,
+            vat_id: null,
+            creation_date: null,
+            last_modification: null,
+            last_modifier_id: null,
+            deleted: null
+        }
     }
 
     /**
@@ -34,41 +58,30 @@ export class Familly {
      * @returns {Object} - The familly data in the format required by the API.
      * @description - This method is used to convert a familly object into the format required by the API.
      */
-    static reverse(familly) {
+
+    static toAPIFormat(familly) {
         return {
-            FAID : familly.id,
-            FADESC : familly.description,
-            FATCD : familly.tcd,
-            FACREA : familly.creation_date,
-            FAMOD : familly.last_update,
-            FAODID : familly.odid,
-            FATOTVAT : familly.total_vat
+            ID: familly.id,
+            DESCRIPTION: familly.description,
+            VAT_ID: familly.vat_id,
+            CREATION_DATE: familly.creation_date,
+            LAST_MODIFICATION: familly.last_modification,
+            LAST_MODIFIER_ID: familly.last_modifier_id,
+            DELETED: familly.deleted
         }
     }
-}
 
-// Familly Model
-export function createFamillyModel(familly) {
-    return {
-        id : familly.FAID,
-        description : familly.FADESC,
-        tcd : familly.FATCD, // ???
-        creation_date : familly.FACREA,
-        last_update : familly.FAMOD,
-        odid : familly.FAODID, // ???
-        total_vat : familly.FATOTVAT, // ?
-    }
-}
+    static getErrors(article) {
+        const errors = [];
+        if (!article.description) {
+            errors.push("Description is required");
+        }
 
-// Reverse Familly Model
-export function reverseFamillyModel(familly) {
-    return {
-        FAID : familly.id,
-        FADESC : familly.description,
-        FATCD : familly.tcd,
-        FACREA : familly.creation_date,
-        FAMOD : familly.last_update,
-        FAODID : familly.odid,
-        FATOTVAT : familly.total_vat
+        if (article.description.length > 50) {
+            errors.push("Description must be less than 50 characters");
+        }
+
+        return errors;
     }
+
 }
