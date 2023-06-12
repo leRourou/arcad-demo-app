@@ -2,22 +2,25 @@ import React, { useCallback, useEffect, useState } from 'react';
 import SearchBar from '../components/searchBar';
 import DataTable from '../components/dataTable.js';
 import ModifyArticle from './articleView';
-import ModifyFamilly from './famillyView';
 import ModifyCountry from './countryView';
 import ModifyCustomer from './customerView';
+import ModifyOrder from './orderView';
+import ModifyProvider from './providerView';
 import Loading from '../views/misc/loadingView.js'
+import { useParams } from 'react-router-dom';
 
 export default function ItemsView(props) {
 
     // PROPS
     const { columns, title, singleTitle, getAll, getLength } = props;
 
+    document.title = title;
+
     // STATES
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [recommended, setRecommended] = useState(false);
     const [showItem, setshowItem] = useState(false);
-    const [dataLength, setDataLength] = useState(0);
+    const [dataLength, setDataLength] = useState(0); 
     const [addItem, setAddItem] = useState(false);
     const [page, setPage] = useState(1);
     const [data, setData] = useState([]);
@@ -28,12 +31,16 @@ export default function ItemsView(props) {
     var maxPages = Math.min(lastPage, maxDisplayedButtons);
     var displayButtons = maxDisplayedButtons < lastPage;
 
-    document.title = title;
+    // If id on URL parameter show this
+    let { id } = useParams();
 
     // Get data
     const getData = useCallback(async () => {
         setLoading(true);
-        setData(await getAll(maxResults, preventSQLInsert(searchTerm), page));
+        if (title !== "Orders")
+            setData(await getAll(maxResults, preventSQLInsert(searchTerm), page));
+        else
+            setData(await getAll(maxResults, page));
         setDataLength(await getLength());
         setLoading(false);
     }, [maxResults, searchTerm, page, getAll, getLength]);
@@ -42,6 +49,7 @@ export default function ItemsView(props) {
     useEffect(() => {
         setPage(1);
         removeModal(false);
+        setshowItem(id ? id : false);
     }, [title])
 
     // Get the data when search term or page changes
@@ -70,13 +78,6 @@ export default function ItemsView(props) {
                         removeModal={(reload) => {removeModal(reload)}}
                         type={type}
                     />)
-            case "Families":
-                return (
-                    <ModifyFamilly
-                        itemId={showItem}
-                        removeModal={(reload) => {removeModal(reload)}}
-                        type={type}
-                    />)
             case "Countries":               
                 return (
                     <ModifyCountry
@@ -87,6 +88,20 @@ export default function ItemsView(props) {
             case "Customers":
                 return (
                     <ModifyCustomer
+                        itemId={showItem}
+                        removeModal={(reload) => {removeModal(reload)}}
+                        type={type}
+                    />)
+            case "Orders":
+                return (
+                    <ModifyOrder
+                        itemId={showItem}
+                        removeModal={(reload) => {removeModal(reload)}}
+                        type={type}
+                    />)
+            case "Providers":
+                return (
+                    <ModifyProvider
                         itemId={showItem}
                         removeModal={(reload) => {removeModal(reload)}}
                         type={type}
@@ -178,7 +193,7 @@ export default function ItemsView(props) {
     }
 
     function addButton() {
-        if (title === "Countries")
+        if (title === "Countries" || title === "Providers")
             return;
         return (
             <button id="add-button" onClick={() => setAddItem(true)}>{"Add " + singleTitle}</button>
@@ -192,12 +207,15 @@ export default function ItemsView(props) {
 
             {addButton()}
 
-            <SearchBar
+            {
+                (title !== "Orders") &&
+                <SearchBar
                 placeholder={"Search for " + title.toLowerCase() + "..."}
                 onSearch={handleSearch}
-                onRecommended={() => setRecommended(!recommended)}
             />
 
+            }
+            
             {displayPageButtons()}
 
             {loading ? <Loading /> :

@@ -1,68 +1,61 @@
-/**
- * Represents an order.
- * @class
- * @category Models
- * @property {number} id - The order ID.
- * @property {number} year - The order year.
- * @property {number} customerId - The order {@link Customer} ID.
- * @property {Date} date - The order date.
- * @property {Date} delete_date - The order delete date.
- * @property {Date} closing_date - The order closing date.
- */
-
 export class Order {
-    /**
-     * @constructor
-     * @param {Object} order 
-     * @description - This constructor is used to create an order object.
-     */
+
     constructor(order) {
-        this.id = order.ORID;
-        this.year = order.ORYEAR;
-        this.customerId = order.ORCUID;
-        this.date = order.ORDATE;
-        this.delete_date = order.ORDELDATE;
-        this.closing_date = order.ORCLODATE;
+        this.id = order.ID;
+        this.year = order.YEAR;
+        this.customerId = order.CUSTOMER_ID;
+        this.date = order.ORDER_DATE;
+        this.delivery_date = order.DELIVERY_DATE;
+        this.closing_date = order.CLOSING_DATE;
     }
 
-    /**
-     * @method
-     * @param {Order} order - An order object to convert.
-     * @returns {Object} - The order data in the format required by the API.
-     * @description - This method is used to convert an order object into the format required by the API.
-     */
-    static reverse(order) {
+    static get columns() {
+        return [
+            { name: "id", type: "number", displayName: "ID", display: true },
+            { name: "year", type: "number", displayName: "Year", display: true },
+            { name: "customerId", type: "number", displayName: "Customer ID", display: true },
+            { name: "date", type: "strDate", displayName: "Order Date", display: true },
+            { name: "delivery_date", type: "strDate", displayName: "Delete Date", display: false },
+            { name: "closing_date", type: "strDate", displayName: "Closing Date", display: false }
+        ];
+    }
+
+    static empty() {
         return {
-            ORID : order.id,
-            ORYEAR : order.year,
-            ORCUID : order.customerId,
-            ORDATE : order.date,
-            ORDELDATE : order.delete_date,
-            ORCLODATE : order.closing_date,
+            id: null,
+            year: null,
+            customerId: null,
+            date: null,
+            delivery_date: null,
+            closing_date: null
         }
     }
-}
 
+    static getErrors(order) {
+        const errors = [];
+        if (!order.year) {
+            errors.push("Year is required");
+        }
 
-export function createOrderModel(order) {
-    return {
-        id : order.ORID,
-        year : order.ORYEAR,
-        customerId : order.ORCUID,
-        date : order.ORDATE,
-        delete_date : order.ORDELDATE,
-        clo_date : order.ORCLODATE, // ???
+        if (!order.customerId) {
+            errors.push("Customer ID is required");
+        }
+
+        if (!order.date) {
+            errors.push("Order Date is required");
+        }
+
+        return errors;
     }
-}
 
-// Reverse Order Model
-export function reverseOrderrModel(order) {
-    return {
-        ORID : order.id,
-        ORYEAR : order.year,
-        ORCUID : order.customerId,
-        ORDATE : order.date,
-        ORDELDATE : order.delete_date,
-        ORCLODATE : order.clo_date,
+    static toAPIFormat(order) {
+        return {
+            ID: order.id,
+            YEAR: order.year,
+            CUSTOMER_ID: order.customerId,
+            ORDER_DATE: order.date,
+            DELIVERY_DATE: order.delivery_date,
+            CLOSING_DATE: order.closing_date,
+        }
     }
 }

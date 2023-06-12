@@ -3,18 +3,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import Modal from '../components/modal.js';
 import Loading from "./misc/loadingView.js";
 import { TextField } from '../components/formField.js';
-import { errorToast, successUpdate } from "../services/toastsServices";
+import { toast } from 'react-toastify';
 import { Country } from "../classes/models/country.js";
 
 import { getCountryById, updateCountry,  } from '../services/countryServices'
-/**
- * Country view
- * @category Views
- * @param {props} props
- * @returns The JSX code for the country view
- */
+
 export default function CountryView(props) {
 
+    document.title = "Edit country";
     const { removeModal, type, itemId } = props;
 
     // Data state
@@ -23,12 +19,6 @@ export default function CountryView(props) {
 
     // Get country
     const getData = useCallback(async () => {
-        // Get countries
-        if (type === "adding") {
-            setCountry(Country.empty());
-            setLoading(false);
-            return;
-        }
         setCountry(await getCountryById(itemId));
         setLoading(false);
     }, [itemId, type]);
@@ -48,17 +38,17 @@ export default function CountryView(props) {
         const errors = Country.getErrors(country);
 
         if (errors.length > 0) {
-            errors.forEach(error => errorToast(error));
+            errors.forEach(error => toast(error, { type: "error" }));
             return;
         }
 
         updateCountry(nCountry).then(
             (response) => {
                 if (response.status === 204) {
-                    successUpdate();
+                    toast("Country updated successfully", { type: "success" })
                     removeModal(true);
                 } else {
-                    errorToast("An error occured while updating the country");
+                    toast("An error occured while updating the country", { type: "error" })
                 }
             }
         )

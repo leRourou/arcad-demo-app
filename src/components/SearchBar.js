@@ -1,12 +1,6 @@
 import React from 'react';
 import '../style/search-bar.scss';
 
-/**
- * @module SearchBar
- * @category Components
- * @description - This component is used to display a search bar.
- * @param {Array} props 
- */
 function SearchBar(props) {
 
 

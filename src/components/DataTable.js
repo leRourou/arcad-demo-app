@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import "../style/data-table.scss";
 
-/**
- * @module DataTable
- * @category Components
- * @description - This component is used to display a table of data.
- * @param {Object} props - The props object containing the data, the columns, the onRowClick function and the maxResults.
- */
 export default function DataTable(props) {
 
     // Props
@@ -21,10 +15,6 @@ export default function DataTable(props) {
         onRowClick(id);
     }
 
-    /**
-     * @function displayColumns - Display the headers of the data table
-     * @returns {JSX} - The JSX code for the headers of the data table
-     */
     function displayColumns() {
         const columnsToDisplay = columns.filter(c => c.display)
         return (
@@ -42,19 +32,8 @@ export default function DataTable(props) {
         );
     }
 
-
-    /**
-     * @function displayData - Display the data of the data table
-     * @returns {JSX} - The JSX code for the data table body
-     */
     function displayData() {
-        /**
-         * @function
-         * @description - Format the cell according to the type of the column
-         * @param {number} key 
-         * @param {string} value 
-         * @returns {JSX} - The JSX code for the cell
-         */
+
         function formatCell(key, value) {
             const column = columns.find((column) => column.name === key);
             switch (column.type) {
@@ -64,6 +43,8 @@ export default function DataTable(props) {
                     return <td key={key}>{formatDate(new Date(value))}</td>;
                 case "strDate":
                     return <td key={key}>{formatDate(strToDate(value))}</td>;
+                case "8dDate":
+                    return <td key={key}>{value}</td>;
                 default:
                     return <td key={key}>{value}</td>;
             }
@@ -121,7 +102,6 @@ function formatNumber(num) {
 
     return integerPart + decimalPart;
 }
-
 
 function formatDate(dateToFormat) {
     const now = new Date();

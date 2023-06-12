@@ -1,34 +1,5 @@
-/**
- * Represents a customer.
- * @class
- * @category Models
- * @property {number} id - The customer ID.
- * @property {string} name - The customer name.
- * @property {string} phone - The customer phone number.
- * @property {string} vat_id - The customer VAT number.
- * @property {string} mail - The customer mail address.
- * @property {string} address - The customer address line 1.
- * @property {string} address2 - The customer address line 2.
- * @property {string} address3 - The customer address line 3.
- * @property {string} city - The customer city.
- * @property {string} zipCode - The customer zip code.
- * @property {string} country - The customer country.
- * @property {number} limcre - The customer credit limit.
- * @property {number} credit - The customer credit.
- * @property {string} last_order - The customer last order date.
- * @property {Date} creation - The customer creation date.
- * @property {TimeStamp} last_update - The customer last update date.
- * @property {number} last_modifier_id - The customer last modifier id.
- * @property {number} deleted - Set at 1 if the customer is deleted.
- */
-
 export class Customer {
 
-    /**
-     * @constructor
-     * @param {Object} customer - The customer data as an object just like it is in the database.
-     * @description - This constructor is used to create a customer object from the data retrieved from the database.
-     */
     constructor(customer) {
         this.id = customer.ID;
         this.name = customer.NAME;
@@ -55,7 +26,7 @@ export class Customer {
             { name: "id", type: "number", displayName: "ID", display: true },
             { name: "name", type: "string", displayName: "Name", display: true },
             { name: "phone", type: "string", displayName: "Phone", display: true },
-            { name: "vat", type: "string", displayName: "VAT", display: false },
+            { name: "vat_id", type: "string", displayName: "VAT", display: false },
             { name: "mail", type: "string", displayName: "Mail", display: false },
             { name: "address", type: "string", displayName: "Address", display: false },
             { name: "address2", type: "string", displayName: "Address 2", display: false },
@@ -78,7 +49,7 @@ export class Customer {
             id: 0,
             name: "",
             phone: "",
-            vat: "",
+            vat_id: "",
             mail: "",
             address: "",
             adress2: "",
@@ -122,12 +93,6 @@ export class Customer {
         return errors;
     }
 
-    /**
-     * @method
-     * @param {Customer} customer - The customer data.
-     * @description - This method is used to convert a customer object into the format required by the API.
-     * @returns {Object} - The customer data in the format required by the API.
-     */
     static toAPIFormat(customer) {
         return {
             ID: customer.id,

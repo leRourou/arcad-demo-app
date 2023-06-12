@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Tooltip from './tooltip';
 
-/**
- * @module FormField
- * @category Components
- * @description - This component is used to display a form field. It can be a text field, a number field, a date field or a select field.
- * @param {Array} props - The props of the component
- * @returns {JSX.Element} - The form field component
- */
 function FormField(props) {
 
-	const { forHtml, label, value, tooltip, inputType, onChange, options, step, min, max, regex } = props;
+	const { forHtml, label, value, tooltip, inputType, onChange, options, step, min, max } = props;
 	const [fieldValue, setFieldValue] = useState(value);
 
 	const placeholder = value;
@@ -19,10 +12,6 @@ function FormField(props) {
 		setFieldValue(value);
 	}, [value]);
 
-	/**
-	 * @description - This function renders the form field component.
-	 * @returns {JSX.Element} - The form field component
-	 */
 	function renderSwitch() {
 		switch (inputType) {
 			case "select":
@@ -92,7 +81,6 @@ function FormField(props) {
 						step={step}
 						min={min}
 						max={max}
-						regex={regex}
 						onChange={
 							e => {
 								setFieldValue(e.target.value);
@@ -139,17 +127,6 @@ function FormField(props) {
 export function NumberField(props) {
 
 	const { forHtml, label, value, tooltip, step, min, max, regex } = props;
-
-	function handleChange(event) {
-		// Regex validation
-		if (regex && regex.test(event.target.value)) {
-			event.target.className = 'modify-field';
-		} else {
-			event.target.className = 'modify-field invalid-field';
-		}
-		props.onChange(event);
-	};
-
 	return (
 		<FormField
 			forHtml={forHtml}
@@ -157,7 +134,7 @@ export function NumberField(props) {
 			value={value}
 			tooltip={<Tooltip content={tooltip} />}
 			inputType="number"
-			onChange={handleChange}
+			onChange={props.onChange}
 			min={min}
 			step={step}
 			max={max}

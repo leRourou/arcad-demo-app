@@ -3,12 +3,15 @@ import React, { useCallback, useEffect, useState } from "react";
 import Modal from '../components/modal.js';
 import Loading from "./misc/loadingView.js";
 import { TextField, SelectField, NumberField } from '../components/formField.js';
-import { errorToast, successUpdate, successAdd } from "../services/toastsServices";
+import { toast } from 'react-toastify';
 import { Customer } from "../classes/models/customer.js";
 import { Link } from "react-router-dom";
+import { useTransition } from "@react-spring/web";
+import { animated } from "@react-spring/web";
 
 import { getCustomerById, updateCustomer, createCustomer } from '../services/customerServices.js'
 import { getAllCountries } from "../services/countryServices.js";
+import { getAllOrders } from "../services/orderServices.js";
 /**
  * Customer view
  * @category Views
@@ -23,11 +26,29 @@ export default function CustomerView(props) {
     const [customer, setCustomer] = useState({});
     const [loading, setLoading] = useState(true);
     const [countries, setCountries] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [openInfos, setOpenInfos] = useState(true);
+    const [openOrders, setOpenOrders] = useState(false);
+
+    var modified = false;
+
+    const transition = {
+        from: { maxHeight: 0 },
+        enter: { maxHeight: 350 },
+        leave: { maxHeight: 0 }
+    }
+
+    document.title = "Edit customer"
+
+    //const transitionInformations = useTransition(openInformations, transition);
+    const transitionOrders = useTransition(openOrders, transition);
+    const transitionEdit = useTransition(openInfos, transition);
 
     // Get customer
     const getData = useCallback(async () => {
         // Get countries
         setCountries(await getAllCountries(500, "", 1));
+        setOrders(await getAllOrders(100, 1, itemId));
         if (type === "adding") {
             setCustomer(Customer.empty());
             setLoading(false);
@@ -53,17 +74,17 @@ export default function CustomerView(props) {
         const errors = Customer.getErrors(customer);
 
         if (errors.length > 0) {
-            errors.forEach(error => errorToast(error));
+            errors.forEach(error => toast(error, { type: "error" }));
             return;
         }
 
         createCustomer(nCustomer).then(
             (response) => {
                 if (response.status === 201) {
-                    successAdd();
+                    toast("Customer added successfully", { type: "success" })
                     removeModal(true);
                 } else {
-                    errorToast("An error occured while adding the customer");
+                    toast("An error occured while adding the customer", { type: "error" })
                 }
             }
         )
@@ -77,17 +98,17 @@ export default function CustomerView(props) {
         const errors = Customer.getErrors(customer);
 
         if (errors.length > 0) {
-            errors.forEach(error => errorToast(error));
+            errors.forEach(error => toast(error, { type: "error" }));
             return;
         }
 
         updateCustomer(nCustomer).then(
             (response) => {
                 if (response.status === 204) {
-                    successUpdate();
-                    removeModal(true);
+                    modified = true;
+                    toast("Customer updated successfully", { type: "success" })
                 } else {
-                    errorToast("An error occured while updating the customer");
+                    toast("An error occured while updating the customer", { type: "error" })
                 }
             }
         )
@@ -98,7 +119,7 @@ export default function CustomerView(props) {
             <div
                 id="black-back"
                 onClick={() => {
-                    removeModal(false);
+                    removeModal(modified);
                 }}
             />
 
@@ -107,150 +128,192 @@ export default function CustomerView(props) {
                     loading ? <Loading /> :
                         <>
                             <h1 id="section-title">{type === "adding" ? "Add a customer" : "Customer n°" + customer.id} </h1>
-                            
-                            <h2 className="subtitle-itemview">Orders</h2>
 
-                            {type === "adding" &&
-                                <div style={{ overflow: 'hidden' }}>
+                            {type !== "adding" &&
+                                <h2 onClick={() => { setOpenInfos(!openInfos); setOpenOrders(false) }} className="subtitle-itemview">Informations  {openInfos ? "⯆" : "⯈"}</h2>
+                            }
 
-                                    <div className="field-line">
-                                        <TextField
-                                            for="name"
-                                            label="Name"
-                                            value={customer.name}
-                                            tooltip={<>Name of the customer. <br></br> Can't be empty</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    name: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                        <TextField
-                                            for="phone"
-                                            label="Phone"
-                                            value={customer.phone}
-                                            tooltip={<>Phone number <br></br>Must be less than 15 characters long</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    phone: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                        <TextField
-                                            for="mail"
-                                            label="Mail"
-                                            value={customer.mail}
-                                            tooltip={<>Email <br></br>Must be in the good email format</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    mail: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                    </div>
+                            <div style={{ overflow: 'hidden' }}>
+                                {transitionEdit((style, item) => item && (
+                                    <animated.div style={style}>
+                                        <div className="field-line">
+                                            <TextField
+                                                for="name"
+                                                label="Name"
+                                                value={customer.name}
+                                                tooltip={<>Name of the customer. <br></br> Can't be empty</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        name: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                            <TextField
+                                                for="phone"
+                                                label="Phone"
+                                                value={customer.phone}
+                                                tooltip={<>Phone number <br></br>Must be less than 15 characters long</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        phone: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                            <TextField
+                                                for="mail"
+                                                label="Mail"
+                                                value={customer.mail}
+                                                tooltip={<>Email <br></br>Must be in the good email format</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        mail: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                        </div>
 
-                                    <div className="field-line">
-                                        <TextField
-                                            for="address"
-                                            label="Address"
-                                            value={customer.address}
-                                            tooltip={<>Address (street number and street name) of the customer<br></br>Must be less than 50 characters long</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    address: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                    </div>
+                                        <div className="field-line">
+                                            <TextField
+                                                for="address"
+                                                label="Address"
+                                                value={customer.address}
+                                                tooltip={<>Address (street number and street name) of the customer<br></br>Must be less than 50 characters long</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        address: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                        </div>
 
-                                    <div className="field-line">
-                                        <TextField
-                                            for="zip"
-                                            label="Zip Code"
-                                            value={customer.zipCode}
-                                            tooltip={<>Zip Code of the customer's address<br></br>Must be less than 9 characters long</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    zipCode: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                        <TextField
-                                            for="city"
-                                            label="City"
-                                            value={customer.city}
-                                            tooltip={<>City of the customer's address<br></br>Must be less than 10 characters long</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    city: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                        <SelectField
-                                            for="country"
-                                            label="Country"
-                                            value={customer.country_id}
-                                            options={countries.map((country) => {
-                                                return {
-                                                    value: country.name,
-                                                    id: country.id
+                                        <div className="field-line">
+                                            <TextField
+                                                for="zip"
+                                                label="ZIP Code"
+                                                value={customer.zipCode}
+                                                tooltip={<>ZIP Code of the customer's address<br></br>Must be less than 9 characters long</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        zipCode: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                            <TextField
+                                                for="city"
+                                                label="City"
+                                                value={customer.city}
+                                                tooltip={<>City of the customer's address<br></br>Must be less than 10 characters long</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        city: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                            <SelectField
+                                                for="country"
+                                                label="Country"
+                                                value={customer.country_id}
+                                                options={countries.map((country) => {
+                                                    return {
+                                                        value: country.name,
+                                                        id: country.id
+                                                    }
+                                                })
                                                 }
-                                            })
-                                            }
-                                            tooltip={<>Country of the customer's address<br></br>To add a country, go to the <Link className="link" to='/countries'>countries</Link> page</>}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    country_id: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                    </div>
+                                                tooltip={<>Country of the customer's address<br></br>To modify a country, go to the <Link className="link" to='/countries'>countries</Link> page</>}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        country_id: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                        </div>
 
-                                    <div className="field-line">
-                                        <NumberField
-                                            for="credit"
-                                            label="Credit"
-                                            value={customer.credit}
-                                            tooltip={<>The actual credit of the customer<br></br>Must be a positive number with two decimals</>}
-                                            min="0"
-                                            step="0.01"
-                                            max="9999999"
-                                            regex={/\d+\.\d{2}/}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    credit: e.target.value
-                                                }))
-                                            }}
-                                        />
+                                        <div className="field-line">
+                                            <NumberField
+                                                for="credit"
+                                                label="Credit"
+                                                value={customer.credit}
+                                                tooltip={<>The actual credit of the customer<br></br>Must be a positive number with two decimals</>}
+                                                min="0"
+                                                step="0.01"
+                                                max="9999999"
+                                                regex={/\d+\.\d{2}/}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        credit: e.target.value
+                                                    }))
+                                                }}
+                                            />
 
-                                        <NumberField
-                                            for="credit_limit"
-                                            label="Credit limit"
-                                            value={customer.credit_limit}
-                                            tooltip={<>The credit limit of the customer<br></br>Must be a positive number with two decimals</>}
-                                            min="0"
-                                            step="0.01"
-                                            max="9999999"
-                                            regex={/\d+\.\d{2}/}
-                                            onChange={(e) => {
-                                                setCustomer(prevState => ({
-                                                    ...prevState,
-                                                    credit_limit: e.target.value
-                                                }))
-                                            }}
-                                        />
-                                    </div>
-                                </div>
+                                            <NumberField
+                                                for="credit_limit"
+                                                label="Credit limit"
+                                                value={customer.credit_limit}
+                                                tooltip={<>The credit limit of the customer<br></br>Must be a positive number with two decimals</>}
+                                                min="0"
+                                                step="0.01"
+                                                max="9999999"
+                                                regex={/\d+\.\d{2}/}
+                                                onChange={(e) => {
+                                                    setCustomer(prevState => ({
+                                                        ...prevState,
+                                                        credit_limit: e.target.value
+                                                    }))
+                                                }}
+                                            />
+                                        </div>
+                                    </animated.div>
+                                ))}
+                            </div>
+
+
+                            {type !== "adding" &&
+                                <>
+                                    <h2 onClick={() => { setOpenOrders(!openOrders); setOpenInfos(false) }} className="subtitle-itemview">Orders  {openOrders ? "⯆" : "⯈"}</h2>
+                                    <div style={{ overflow: 'hidden' }}>
+                                    {transitionOrders((style, item) => item && (
+                                        <animated.div style={style}>
+                                            {orders.length === 0 ?
+                                                <p className="no-orders">No orders</p> :
+                                                <>
+
+                                                    <table style={{marginTop:"10px"}}>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th>Date</th>
+                                                                <th>Closing date</th>
+                                                            </tr>
+                                                        </thead>
+                                                    <tbody>
+                                                        {orders.map((order) => {
+                                                            return (
+                                                                <tr onClick={() => window.location.pathname = "orders/" + order.id}>
+                                                                    <td key={order.id}>{order.id}</td>
+                                                                    <td key={order.date}>{formatDate(order.date.toString())}</td>
+                                                                    <td key={order.closing_date}>{formatDate(order.closing_date.toString())}</td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </tbody>
+                                                    </table>
+
+
+                                                </>}
+                                        </animated.div>
+                                    ))} </div></>
                             }
                             
+
                             <div className="modify-buttons-list">
 
                                 <button className="modify-button save-button" onClick={() => {
@@ -279,4 +342,11 @@ export default function CustomerView(props) {
             </div>
         </Modal>
     );
+}
+
+function formatDate(string) {
+    let years = string.substring(0, 4)
+    let months = string.substring(4, 6)
+    let days = string.substring(6, 8)
+    return `${years}-${months}-${days}`
 }

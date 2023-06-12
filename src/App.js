@@ -2,7 +2,6 @@ import React from "react";
 import NotFound from "./views/misc/notFoundView.js";
 import Building from "./views/misc/buildingView";
 import Items from "./views/itemsDataView.js";
-import About from "./views/misc/aboutView.js";
 import { Route, Routes } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,8 +17,8 @@ import { getAllProviders, getLengthProviders } from "./services/providerServices
 import { Country } from "./classes/models/country";
 import { getAllCountries, getLengthCountries } from "./services/countryServices.js";
 
-import { Familly } from "./classes/models/familly.js";
-import { getAllFamilies, getLengthFamilies } from "./services/famillyServices.js";
+import { Order } from "./classes/models/order.js";
+import { getAllOrders, getLengthOrders } from "./services/orderServices.js";
 
 /**
  * @module App
@@ -27,51 +26,63 @@ import { getAllFamilies, getLengthFamilies } from "./services/famillyServices.js
  * @returns {JSX.Element} - The App component
  */
 
-function App() {
-  return (
-    <Routes>
-
-      <Route path="/articles" element={
-        <Items
+var article = (
+  <Items
           columns={Article.columns}
           title={'Articles'}
           singleTitle='article'
           getAll={getAllArticles}
           getLength={getLengthArticles}
-        />}
-      />
+        />
+)
 
-      <Route path="/customers" element={
-        <Items
+var customer = (
+  <Items
           columns={Customer.columns}
           title={'Customers'}
           singleTitle='customer'
           getAll={getAllCustomers}
           getLength={getLengthCustomers}
-        />}
-      />
+        />
+)
 
-      <Route path="/" element={<Building />} />
-
-      <Route path="/families" element={
-        <Items
-          columns={Familly.columns}
-          title={'Families'}
-          singleTitle='familly'
-          getAll={getAllFamilies}
-          getLength={getLengthFamilies}
-        />}
-      />
-
-      <Route path="/providers" element={
-        <Items
+var provider = (
+  <Items
           columns={Provider.columns}
           title={'Providers'}
           singleTitle='provider'
           getAll={getAllProviders}
           getLength={getLengthProviders}
-        />}
-      />
+        />
+)
+
+var orders = (
+  <Items
+          columns={Order.columns}
+          title={'Orders'}
+          singleTitle='order'
+          getAll={getAllOrders}
+          getLength={getLengthOrders}
+        />
+)
+
+function App() {
+  return (
+    <Routes>
+
+      <Route path="/" element={<Building />} />
+
+      <Route path={"/articles"} element={article}/>
+      <Route path={"/articles/:id"} element={article}/>
+
+      <Route path="/customers" element={customer}/>
+      <Route path="/customers/:id" element={customer}/>
+
+      <Route path="/providers" element={provider}/>
+      <Route path="/providers/:id" element={provider}/>
+
+      <Route path="/orders" element={orders}/>
+      <Route path="/orders/:id" element={orders}/>
 
       <Route path="/countries" element={
         <Items
@@ -82,11 +93,6 @@ function App() {
           getLength={getLengthCountries}
         />}
       />
-
-
-      <Route path="/about" element={<About />} />
-
-      <Route path="/orders" element={<Building />} />
 
       <Route path="*" element={<NotFound />} />
 

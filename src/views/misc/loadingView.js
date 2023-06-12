@@ -6,7 +6,7 @@ export default function Loading() {
 
   return (
     <div className="building-view">
-      <h1>Page loading...</h1>
+      <h1>Loading...</h1>
       <img src="images/loading-icon.svg" alt="Loading icon"></img>
     </div>
   );

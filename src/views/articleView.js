@@ -4,7 +4,7 @@ import Modal from '../components/modal.js';
 import Loading from "./misc/loadingView.js";
 import { TextField, NumberField, SelectField, TextAreaField } from '../components/formField.js';
 import { Link } from "react-router-dom";
-import { successDelete, errorToast, successUpdate, successAdd } from "../services/toastsServices";
+import { toast } from "react-toastify";
 import { useTransition } from "@react-spring/web";
 import { animated } from "@react-spring/web";
 
@@ -12,14 +12,10 @@ import { Article } from "../classes/models/article.js";
 import { updateArticle, createArticle, deleteArticle, getArticleById, getDescription, updateDescription } from "../services/articleServices";
 import { getAllFamilies } from '../services/famillyServices.js'
 import { getProvidersByArticles } from "../services/providerServices.js";
-/**
- * Article view
- * @category Views
- * @param {props} props
- * @returns The JSX code for the article view
- */
+
 export default function ArticleView(props) {
 
+  document.title = "Edit article"
   const { removeModal, type, itemId } = props;
 
   // Data state
@@ -32,23 +28,16 @@ export default function ArticleView(props) {
   const [openDescription, setOpenDescription] = useState(false);
   const [openProviders, setOpenProviders] = useState(false);
 
-  const transitionEdit = useTransition(openEdit, {
-    from: { height: 0 },
-    enter: { height: 280 },
-    leave: { height: 0 }
-  });
+  var transition = {
+    from: { maxHeight: 0 },
+    enter: { maxHeight: 300 },
+    leave: { maxHeight: 0 },
+    trail: 300
+  }
 
-  const transitionProviders = useTransition(openProviders, {
-    from: { height: 0 },
-    enter: { height: 50 },
-    leave: { height: 0 }
-  });
-
-  const transitionDescription = useTransition(openDescription, {
-    from: { height: 0 },
-    enter: { height: 150 },
-    leave: { height: 0 }
-  });
+  const transitionEdit = useTransition(openEdit, transition);
+  const transitionProviders = useTransition(openProviders, transition);
+  const transitionDescription = useTransition(openDescription, transition);
 
   // Get article
   const getData = useCallback(async () => {
@@ -67,7 +56,6 @@ export default function ArticleView(props) {
       // Get article
       setArticle(await getArticleById(itemId));
       setLoading(false);
-      document.title = "See an article"
     }
   }, [itemId, type]);
 
@@ -89,17 +77,17 @@ export default function ArticleView(props) {
     const errors = Article.getErrors(article);
 
     if (errors.length > 0) {
-      errors.forEach(error => errorToast(error));
+      errors.forEach(error => toast(error, { type: "error" }));
       return;
     }
 
     createArticle(nArticle).then(
       (response) => {
         if (response.status === 201) {
-          successAdd();
+          toast("Article created successfully !", { type: "success" })
           removeModal(true);
         } else {
-          errorToast("An error occured while adding the article");
+          toast("An error occured during the article creation.", { type: "error" })
         }
       }
     )
@@ -114,7 +102,7 @@ export default function ArticleView(props) {
     const errors = Article.getErrors(article);
 
     if (errors.length > 0) {
-      errors.forEach(error => errorToast(error));
+      errors.forEach(error => toast(error, { type: "error" }));
       return;
     }
 
@@ -123,10 +111,10 @@ export default function ArticleView(props) {
     updateArticle(nArticle).then(
       (response) => {
         if (response.status === 204) {
-          successUpdate();
+          toast("Article updated successfully !", { type: "success" })
           removeModal(true);
         } else {
-          errorToast("An error occured while updating the article");
+          toast("An error occured during the article update.", { type: "error" })
         }
       }
     )
@@ -137,10 +125,10 @@ export default function ArticleView(props) {
     deleteArticle(article.id).then(
       (response) => {
         if (response.status === 204) {
-          successDelete();
+          toast("Article deleted successfully !", { type: "success" })
           removeModal(true);
         } else {
-          errorToast("An error occured while deleting the article");
+          toast("An error occured during the article deletion.", { type: "error" })
         }
       }
     )
@@ -178,7 +166,12 @@ export default function ArticleView(props) {
 
               <h1 id="section-title">{type === "adding" ? "Add an article" : "Article n°" + article.id} </h1>
 
-              <h2 onClick={() => setOpenDescription(!openDescription)} className="subtitle-itemview">Description {openDescription ? "⯆" : "⯈"}</h2>
+              <h2 onClick={() => {
+                setOpenDescription(!openDescription)
+                setOpenEdit(false)
+                setOpenProviders(false)
+              }
+              } className="subtitle-itemview">Description {openDescription ? "⯆" : "⯈"}</h2>
 
               <div style={{ overflow: "hidden" }} >
                 {transitionDescription((style, item) => item && (
@@ -201,13 +194,16 @@ export default function ArticleView(props) {
                 ))}
               </div>
 
-              <h2 onClick={() => setOpenEdit(!openEdit)} className="subtitle-itemview">Informations {openEdit ? "⯆" : "⯈"}</h2>
+              <h2 onClick={() => {
+                setOpenDescription(false)
+                setOpenEdit(!openEdit)
+                setOpenProviders(false)
+              }} className="subtitle-itemview">Informations {openEdit ? "⯆" : "⯈"}</h2>
 
               <div style={{ overflow: 'hidden' }}>
 
                 {transitionEdit((style, item) => item && (
                   <animated.div style={style}>
-
                     <div className="field-line">
                       <TextField
                         for="description"
@@ -314,15 +310,20 @@ export default function ArticleView(props) {
 
 
               {type === "modify" &&
-              <>
-                <h2 className="subtitle-itemview" onClick={() => setOpenProviders(!openProviders)}>Suppliers ({providers.length}) {openProviders ? "⯆" : "⯈"}</h2>
-                <div style={{ overflow: "hidden" }} >
-                {transitionProviders((style, item) => item && (
-                  <animated.div style={style}>
-                    {displayProviders()}
-                  </animated.div>
-                ))}
-                </div>
+                <>
+                  <h2 className="subtitle-itemview" onClick={() => {
+                    setOpenDescription(false)
+                    setOpenEdit(false)
+                    setOpenProviders(!openProviders)
+                  }
+                  }>Suppliers ({providers.length}) {openProviders ? "⯆" : "⯈"}</h2>
+                  <div style={{ overflow: "hidden" }} >
+                    {transitionProviders((style, item) => item && (
+                      <animated.div style={style}>
+                        {displayProviders()}
+                      </animated.div>
+                    ))}
+                  </div>
                 </>
               }
 
