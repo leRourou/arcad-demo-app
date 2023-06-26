@@ -19,7 +19,6 @@ export default function ProviderView(props) {
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Get provider
     const getData = useCallback(async () => {
         setCountries(await getAllCountries(500, "", 1));
         setProvider(await getProviderById(itemId));
@@ -34,7 +33,6 @@ export default function ProviderView(props) {
         fetchData();
     }, [getData]);
 
-    // Modify provider
     async function modifyProvider() {
         var nProvider = provider;
         nProvider.id = provider.id;
@@ -59,135 +57,126 @@ export default function ProviderView(props) {
 
 
     return (
-        <Modal>
-            <div
-                id="black-back"
-                onClick={() => {
-                    removeModal(false);
-                }}
-            />
+        <Modal closeModal={() => removeModal(false)}>
 
-            <div id="modify-view">
-                {
-                    loading ? <Loading /> :
-                        <>
+            {
+                loading ? <Loading /> :
+                    <>
 
-                            <h1 id="section-title">{"Provider " + provider.id} </h1>
+                        <h1 id="section-title">{"Provider " + provider.id} </h1>
 
-                            <div className="field-line">
-                                <TextField
-                                    for="name"
-                                    label="Name"
-                                    value={provider.name}
-                                    tooltip={<>The name of the provider. <br></br> Can't be empty</>}
-                                    onChange={(e) => {
-                                        setProvider(prevState => ({
-                                            ...prevState,
-                                            name: e.target.value
-                                        }))
-                                    }}
-                                />
-                                <TextField
-                                    for="phone"
-                                    label="Phone"
-                                    value={provider.phone}
-                                    tooltip={<>The phone number of the provider <br></br> Must be less than 15 characters long</>}
-                                    onChange={(e) => {
-                                        setProvider(prevState => ({
-                                            ...prevState,
-                                            phone: e.target.value
-                                        }))
-                                    }}
-                                />
-                                <TextField
-                                    for="email"
-                                    label="Email"
-                                    value={provider.email}
-                                    tooltip={<>The email address of the provider. <br></br> Must be less than 50 characters long</>}
-                                    onChange={(e) => {
-                                        setProvider(prevState => ({
-                                            ...prevState,
-                                            email: e.target.value
-                                        }))
-                                    }}
-                                />
-                            </div>
+                        <div className="field-line">
+                            <TextField
+                                for="name"
+                                label="Name"
+                                value={provider.name}
+                                tooltip={<>The name of the provider. <br></br> Can't be empty</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        name: e.target.value
+                                    }))
+                                }}
+                            />
+                            {/*<TextField
+                                for="phone"
+                                label="Phone"
+                                value={provider.phone}
+                                tooltip={<>The phone number of the provider <br></br> Must be less than 15 characters long</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        phone: e.target.value
+                                    }))
+                                }}
+                            />
+                            <TextField
+                                for="email"
+                                label="Email"
+                                value={provider.email}
+                                tooltip={<>The email address of the provider. <br></br> Must be less than 50 characters long</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        email: e.target.value
+                                    }))
+                                }}
+                            />*/}
+                        </div>
 
-                            <div className="field-line">
+                        <div className="field-line">
+                            <TextField
+                                for="address"
+                                label="Address"
+                                value={provider.address}
+                                tooltip={<>The address of the provider <br></br>Must be less than 50 characters long</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        address: e.target.value
+                                    }))
+                                }}
+                            />
+                        </div>
 
-                                <TextField
-                                    for="address"
-                                    label="Address"
-                                    value={provider.address}
-                                    tooltip={<>The address of the provider <br></br>Must be less than 50 characters long</>}
-                                    onChange={(e) => {
-                                        setProvider(prevState => ({
-                                            ...prevState,
-                                            address: e.target.value
-                                        }))
-                                    }}
-                                />
-                            </div>
-
-                            <div className="field-line">
-                                <TextField
-                                    for="zipcode"
-                                    label="ZIP Code"
-                                    value={provider.zipCode}
-                                    tooltip={<>The ZIP Code of the provider's address <br></br>Must be less than 10 characters long</>}
-                                    onChange={(e) => {
-                                        setProvider(prevState => ({
-                                            ...prevState,
-                                            zipCode: e.target.value
-                                        }))
-                                    }}
-                                />
-                                <TextField
-                                    for="city"
-                                    label="City"
-                                    value={provider.city}
-                                    tooltip={<>The city of the provider's address <br></br>Must be less than 30 characters long</>}
-                                    onChange={(e) => {
-                                        setProvider(prevState => ({
-                                            ...prevState,
-                                            city: e.target.value
-                                        }))
-                                    }}
-                                />
-                                 <SelectField
-                                                for="country"
-                                                label="Country"
-                                                value={provider.country_id}
-                                                options={countries.map((country) => {
-                                                    return {
-                                                        value: country.name,
-                                                        id: country.id
-                                                    }
-                                                })
-                                                }
-                                                tooltip={<>Country of the provider's address<br></br>To modify a country, go to the <Link className="link" to='/countries'>countries</Link> page</>}
-                                                onChange={(e) => {
-                                                    setProvider(prevState => ({
-                                                        ...prevState,
-                                                        country_id: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                            </div>
-
-                            <div className="modify-buttons-list">
-                                <button className="modify-button save-button" onClick={() => {
-
-                                    if (window.confirm("Are you sure you want to save changes ?")) {
-                                        modifyProvider()
+                        <div className="field-line">
+                            <TextField
+                                for="zipcode"
+                                label="ZIP Code"
+                                value={provider.zipCode}
+                                tooltip={<>The ZIP Code of the provider's address <br></br>Must be less than 10 characters long</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        zipCode: e.target.value
+                                    }))
+                                }}
+                            />
+                            <TextField
+                                for="city"
+                                label="City"
+                                value={provider.city}
+                                tooltip={<>The city of the provider's address <br></br>Must be less than 30 characters long</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        city: e.target.value
+                                    }))
+                                }}
+                            />
+                            <SelectField
+                                for="country"
+                                label="Country"
+                                value={provider.country_id}
+                                options={countries.map((country) => {
+                                    return {
+                                        value: country.name,
+                                        id: country.id
                                     }
+                                })
+                                }
+                                tooltip={<>Country of the provider's address<br></br>To modify a country, go to the <Link className="link" to='/countries'>countries</Link> page</>}
+                                onChange={(e) => {
+                                    setProvider(prevState => ({
+                                        ...prevState,
+                                        country_id: e.target.value
+                                    }))
+                                }}
+                            />
+                        </div>
 
-                                }}>{"Save changes"}</button>
+                        <div className="modify-buttons-list">
+                            <button className="modify-button save-button" onClick={() => {
 
-                            </div>
-                        </>
-                }
-            </div>
+                                if (window.confirm("Are you sure you want to save changes ?")) {
+                                    modifyProvider()
+                                }
+
+                            }}>{"Save changes"}</button>
+
+                        </div>
+                    </>
+            }
         </Modal>
     );
 }

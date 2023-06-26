@@ -4,6 +4,7 @@ import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/perspective-subtle.css';
 
 export default function Tooltip(props) {
+
     if (!props.content) return null
     const content = props.content;
 
@@ -19,7 +20,7 @@ export default function Tooltip(props) {
                 allowHTML='true'
                 animation='perspective-subtle'
             >
-                <img className='info-icon' src='http://localhost:3000/images/info.svg' alt="tooltip info icon"></img>
+                <img className='info-icon' src={process.env.PUBLIC_URL + '/images/info.svg'} alt="tooltip info icon"></img>
             </Tippy>
         </span>
     );

@@ -1,87 +1,118 @@
 import axios from 'axios';
 import { Article } from '../classes/models/article';
 import api from './api.json';
+import { createInformations } from './articleInfomationsServices';
 
-const api_endpoint = api.endpoint + 'articles/';
-
-export function getAllArticles(nb, search, page ) {
-    return axios.get(api_endpoint + `?nb=${nb}&search=${search}&page=${page}`)
-        .then(response => response.data.articles.map(article => new Article(article)))
+export async function getAllArticles(nb, search, page) {
+    return axios.get(api.endpoint + api.items.article + `?nb=${nb}&search=${search}&page=${page}`)
+        .then(response => response.data.articles.map(article => new Article(
+            article.ID,
+            article.DESCRIPTION,
+            article.SALE_PRICE,
+            article.WHOLESALE_PRICE,
+            article.FAMILLY_ID,
+            article.STOCK,
+            article.MINIMUM_QUANTITY,
+            article.CUSTOMER_QUANTITY,
+            article.PURCHASE_QUANTTITY,
+            article.VAT_ID,
+            article.CREATION_DATE,
+            article.LAST_MODIFICATION,
+            article.LAST_MODIFIER_ID
+        )))
 }
 
-export function getArticleById(id) {
-    return axios.get(api_endpoint + id)
-        .then(response => new Article(response.data.article));
+export async function getArticleById(id) {
+    return axios.get(api.endpoint + api.items.article + id)
+        .then(response => { return response.data.article }).then(article =>
+            new Article(
+                article.ID,
+                article.DESCRIPTION,
+                article.SALE_PRICE,
+                article.WHOLESALE_PRICE,
+                article.FAMILLY_ID,
+                article.STOCK,
+                article.MINIMUM_QUANTITY,
+                article.CUSTOMER_QUANTITY,
+                article.PURCHASE_QUANTTITY,
+                article.VAT_ID,
+                article.CREATION_DATE,
+                article.LAST_MODIFICATION,
+                article.LAST_MODIFIER_ID
+            ));
 }
 
 export async function updateArticle(article) {
-    article.last_update = new Date().toISOString()
-    const newArticle = Article.toAPIFormat(article);
     try {
-        const response = axios.put(api_endpoint, newArticle);
-        return response;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } else {
-            return error;
+        article.last_update = new Date().toISOString()
+        const newArticle = Article.toAPIFormat(article);
+        const response = await axios.put(api.endpoint + api.items.article, newArticle)
+        if (response.status === 204) {
+            return true;
         }
+    } catch (error) {
+        return false;
     }
 }
 
-
-export async function createArticle(article) {
-    article.tax_id = 2;
-    const maxId = await getMaxID();
-    article.id = (parseInt(maxId) + 1).toString();
-    article.last_update = new Date().toISOString()
-    const newArticle = Article.toAPIFormat(article);
+export async function createArticle(article, description) {
     try {
-        const response = await axios.post(api_endpoint, newArticle);
-        return response;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } else {
-            return error;
+        const MAX_ID = await getMaxID();
+        article.id = (parseInt(MAX_ID) + 1).toString();
+        article.last_update = new Date().toISOString()
+        const newArticle = Article.toAPIFormat(article);
+        const response = await axios.post(api.endpoint + api.items.article, newArticle);
+        createInformations(article.id, description);
+        if (response.status === 201 || response.status === 200) {
+            return true;
         }
+    } catch (error) {
+        return false;
     }
 }
 
-export function getDescription(id) {
-    return axios.get(api.endpoint + `artdesc/${id}`)
-        .then(response => response.data.ArticleDesc)
-}
-
-export function updateDescription(description) {
+export async function createArticleProvider(articleId, providerId) {
+    let objToCreate = {}
+    objToCreate.PROVIDER_ID = providerId;
+    objToCreate.ARTICLE_ID = articleId;
     try {
-        const response = axios.put(api.endpoint + `artdesc`, description);
-        return response;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } else {
-            return error;
+        const response = await axios.post(api.endpoint + api.items.article_provider, objToCreate);
+        if (response.status === 201 || response.status === 200) {
+            return true;
         }
+    } catch (error) {
+        return false;
     }
 }
+
+export async function deleteArticleProvider(articleId, providerId) {
+    try {
+        const response = await axios.delete(api.endpoint + api.items.article_provider + `${articleId}/${providerId}`);
+        if (response.status === 204) {
+            return true;
+        }
+    } catch (error) {
+        return false;
+    }
+}
+
 
 export function deleteArticle(id) {
-    axios.delete(api.endpoint + 'artdesc/' + id)
-    return axios.delete(api_endpoint + id)
+    axios.delete(api.endpoint + api.items.article + id)
+    return axios.delete(api.endpoint + api.items.article + id)
 }
 
 export function getArticlesByProviders(providerID) {
-    return axios.get(api_endpoint + `provider/${providerID}`)
+    return axios.get(api.endpoint + api.items.provider + `${providerID}`)
         .then(response => response.data.providers)
 }
 
 export function getMaxID() {
-    return axios.get(api_endpoint + `max`)
+    return axios.get(api.endpoint + api.items.article + `max`)
         .then(response => response.data.max)
 }
 
 export function getLengthArticles() {
-    return axios.get(api_endpoint + `length`)
+    return axios.get(api.endpoint + api.items.article + `length`)
         .then(response => response.data.length)
 }

@@ -1,3 +1,14 @@
 {
-    "endpoint":"http://10.5.6.28:10010/web/services/"
+    "endpoint":"http://10.5.6.28:10010/web/services/",
+    "items" : {
+        "article": "articles/",
+        "article_description": "artdesc/",
+        "article_provider" : "artiprovs/",
+        "country" : "countries/",
+        "customer" : "customers/",
+        "familly" : "families/",
+        "order_line" : "orderlines/",
+        "order" : "orders/",
+        "provider" : "providers/"
+    }
 }

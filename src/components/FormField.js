@@ -1,6 +1,99 @@
 import React, { useState, useEffect } from "react";
 import Tooltip from './tooltip';
 
+// Number field component
+export function NumberField(props) {
+
+	const { forHtml, label, value, tooltip, step, min, max, regex } = props;
+	return (
+		<FormField
+			forHtml={forHtml}
+			label={label}
+			value={value}
+			tooltip={<Tooltip content={tooltip} />}
+			inputType="number"
+			onChange={props.onChange}
+			min={min}
+			step={step}
+			max={max}
+			regex={regex}
+		/>
+	);
+}
+
+// Text field component
+export function TextField(props) {
+	const { forHtml, label, value, tooltip } = props;
+
+	return (
+		<FormField
+			forHtml={forHtml}
+			label={label}
+			value={value}
+			tooltip={<Tooltip content={tooltip} />}
+			inputType="text"
+			onChange={props.onChange}
+		/>
+	);
+}
+
+// Text area component
+export function TextAreaField(props) {
+	const { forHtml, label, value, tooltip } = props;
+
+	return (
+		<FormField
+			forHtml={forHtml}
+			label={label}
+			value={value}
+			tooltip={<Tooltip content={tooltip} />}
+			inputType="textarea"
+			onChange={props.onChange}
+		/>
+	);
+}
+
+// Select component
+export function SelectField(props) {
+	const { forHtml, label, value, options, tooltip } = props;
+	return (
+		<FormField
+			forHtml={forHtml}
+			label={label}
+			value={value}
+			tooltip={<Tooltip content={tooltip} />}
+			inputType="select"
+			options={options}
+			onChange={props.onChange}
+		/>
+	);
+}
+
+export function DateField(props) {
+	const { forHtml, label, value, tooltip } = props;
+
+	return (
+		<FormField
+			forHtml={forHtml}
+			label={label}
+			value={value}
+			tooltip={<Tooltip content={tooltip} />}
+			inputType="date"
+			onChange={props.onChange}
+		/>
+	);
+}
+
+// Label component
+export function LabelField(props) {
+	const { forHtml, label } = props;
+
+	return (
+		<label className='field-label' htmlFor={forHtml}>{label}</label>
+	)
+}
+
+
 function FormField(props) {
 
 	const { forHtml, label, value, tooltip, inputType, onChange, options, step, min, max } = props;
@@ -123,94 +216,3 @@ function FormField(props) {
 	);
 }
 
-// Number field component
-export function NumberField(props) {
-
-	const { forHtml, label, value, tooltip, step, min, max, regex } = props;
-	return (
-		<FormField
-			forHtml={forHtml}
-			label={label}
-			value={value}
-			tooltip={<Tooltip content={tooltip} />}
-			inputType="number"
-			onChange={props.onChange}
-			min={min}
-			step={step}
-			max={max}
-			regex={regex}
-		/>
-	);
-}
-
-// Text field component
-export function TextField(props) {
-	const { forHtml, label, value, tooltip } = props;
-
-	return (
-		<FormField
-			forHtml={forHtml}
-			label={label}
-			value={value}
-			tooltip={<Tooltip content={tooltip} />}
-			inputType="text"
-			onChange={props.onChange}
-		/>
-	);
-}
-
-// Text area component
-export function TextAreaField(props) {
-	const { forHtml, label, value, tooltip } = props;
-
-	return (
-		<FormField
-			forHtml={forHtml}
-			label={label}
-			value={value}
-			tooltip={<Tooltip content={tooltip} />}
-			inputType="textarea"
-			onChange={props.onChange}
-		/>
-	);
-}
-
-// Select component
-export function SelectField(props) {
-	const { forHtml, label, value, options, tooltip } = props;
-	return (
-		<FormField
-			forHtml={forHtml}
-			label={label}
-			value={value}
-			tooltip={<Tooltip content={tooltip} />}
-			inputType="select"
-			options={options}
-			onChange={props.onChange}
-		/>
-	);
-}
-
-export function DateField(props) {
-	const { forHtml, label, value, tooltip } = props;
-
-	return (
-		<FormField
-			forHtml={forHtml}
-			label={label}
-			value={value}
-			tooltip={<Tooltip content={tooltip} />}
-			inputType="date"
-			onChange={props.onChange}
-		/>
-	);
-}
-
-// Label component
-export function LabelField(props) {
-	const { forHtml, label } = props;
-
-	return (
-		<label className='field-label' htmlFor={forHtml}>{label}</label>
-	)
-}

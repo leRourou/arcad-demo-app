@@ -1,15 +1,15 @@
 export class Order {
 
-    constructor(order) {
-        this.id = order.ID;
-        this.year = order.YEAR;
-        this.customerId = order.CUSTOMER_ID;
-        this.date = order.ORDER_DATE;
-        this.delivery_date = order.DELIVERY_DATE;
-        this.closing_date = order.CLOSING_DATE;
+    constructor(id, year, customerId, date, delivery_date, closing_date) {
+        this.id = id;
+        this.year = year;
+        this.customerId = customerId;
+        this.date = date;
+        this.delivery_date = delivery_date;
+        this.closing_date = closing_date;
     }
 
-    static get columns() {
+    static getColumns() {
         return [
             { name: "id", type: "number", displayName: "ID", display: true },
             { name: "year", type: "number", displayName: "Year", display: true },
@@ -21,27 +21,25 @@ export class Order {
     }
 
     static empty() {
-        return {
-            id: null,
-            year: null,
-            customerId: null,
-            date: null,
-            delivery_date: null,
-            closing_date: null
-        }
+        return new Order(0, "", "", "", "", "");
     }
 
     static getErrors(order) {
         const errors = [];
-        if (!order.year) {
+        const { year, customerId, date } = order;
+
+        // Year
+        if (!year) {
             errors.push("Year is required");
         }
 
-        if (!order.customerId) {
+        // Customer ID
+        if (!customerId) {
             errors.push("Customer ID is required");
         }
 
-        if (!order.date) {
+        // Order Date
+        if (!date) {
             errors.push("Order Date is required");
         }
 

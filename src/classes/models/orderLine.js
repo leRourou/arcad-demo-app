@@ -1,15 +1,15 @@
 export class OrderLine {
 
-    constructor(orderLine) {
-        this.id = orderLine.ORDER_ID;
-        this.year = orderLine.ORDER_YEAR;
-        this.line = orderLine.LINE;
-        this.articleId = orderLine.ARTICLE_ID;
-        this.quantity = orderLine.QUANTITY;
-        this.quantityLivred = orderLine.QUANTITY_DELIVRED;
-        this.price = orderLine.PRICE;
-        this.total = orderLine.TOTAL;
-        this.totalVat = orderLine.TOTAL_WITH_VAT;
+    constructor(id, year, line, articleId, quantity, quantityLivred, price, total, totalVat) {
+        this.id = id;
+        this.year = year;
+        this.line = line;
+        this.articleId = articleId;
+        this.quantity = quantity;
+        this.quantityLivred = quantityLivred;
+        this.price = price;
+        this.total = total;
+        this.totalVat = totalVat;
     }
 
     static toAPIFormat(orderLine) {

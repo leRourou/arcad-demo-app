@@ -1,25 +1,25 @@
 export class Provider {
 
-    constructor(provider) {
-        this.id = provider.ID;
-        this.name = provider.NAME;
-        this.contact = provider.CONTACT;
-        this.phone = provider.PHONE;
-        this.vat_id = provider.VAT_ID;
-        this.mail = provider.EMAIL;
-        this.address = provider.ADDRESS_LINE_1;
-        this.address2 = provider.ADDRESS_LINE_2;
-        this.address3 = provider.ADDRESS_LINE_3;
-        this.zipCode = provider.ZIPCODE;
-        this.city = provider.CITY;
-        this.country_id = provider.COUNTRY_ID;
-        this.creation_date = provider.CREATION_DATE;
-        this.last_update = provider.LAST_MODIFICATION;
-        this.last_modifier_id = provider.LAST_MODIFIER_ID;
-        this.delete_date = provider.DELETED;
+    constructor(id, name, contact, phone, vat_id, mail, address, address2, address3, zipCode, city, country_id, creation_date, last_update, last_modifier_id, delete_date) {
+        this.id = id;
+        this.name = name;
+        this.contact = contact;
+        this.phone = phone;
+        this.vat_id = vat_id;
+        this.mail = mail;
+        this.address = address;
+        this.address2 = address2;
+        this.address3 = address3;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.country_id = country_id;
+        this.creation_date = creation_date;
+        this.last_update = last_update;
+        this.last_modifier_id = last_modifier_id;
+        this.delete_date = delete_date;
     }
 
-    static get columns() {
+    static getColumns() {
         return [
             { name: "id", type: "number", displayName: "ID", display: true },
             { name: "name", type: "string", displayName: "Nom", display: true },
@@ -42,32 +42,40 @@ export class Provider {
 
     static getErrors(provider) {
         let errors = [];
+        const { name, phone, vat_id, mail, address, zipCode, city } = provider;
 
-        if (provider.name === "") {
+        // Name
+        if (name === "") {
             errors.push("The name can't be empty");
         }
 
-        if (provider.phone.length > 15) {
+        // Phone
+        if (phone.length > 15) {
             errors.push("The phone number must be less than 15 characters long");
         }
 
-        if (provider.vat_id.length > 15) {
+        // VAT ID
+        if (vat_id.length > 15) {
             errors.push("The VAT ID must be less than 15 characters long");
         }
 
-        if (provider.mail.length > 50) {
+        // Mail
+        if (mail.length > 50) {
             errors.push("The mail must be less than 50 characters long");
         }
 
-        if (provider.address.length > 50) {
+        // Address
+        if (address.length > 50) {
             errors.push("The address must be less than 50 characters long");
         }
 
-        if (provider.zipCode.length > 10) {
+        // Zip Code
+        if (zipCode.length > 10) {
             errors.push("The zip code must be less than 10 characters long");
         }
 
-        if (provider.city.length > 30) {
+        // City
+        if (city.length > 30) {
             errors.push("The city must be less than 30 characters long");
         }
 

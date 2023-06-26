@@ -1,9 +1,9 @@
 import React from "react";
 import NotFound from "./views/misc/notFoundView.js";
-import Building from "./views/misc/buildingView";
 import Items from "./views/itemsDataView.js";
 import { Route, Routes } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
+import WelcomeView from "./views/welcomeView.js";
 
 import { Article } from "./classes/models/article";
 import { getAllArticles, getLengthArticles } from "./services/articleServices.js";
@@ -20,15 +20,9 @@ import { getAllCountries, getLengthCountries } from "./services/countryServices.
 import { Order } from "./classes/models/order.js";
 import { getAllOrders, getLengthOrders } from "./services/orderServices.js";
 
-/**
- * @module App
- * @description - This main component of the application. Also contains the routes logic of the application.
- * @returns {JSX.Element} - The App component
- */
-
-var article = (
+const ARTICLE = (
   <Items
-          columns={Article.columns}
+          columns={Article.getColumns}
           title={'Articles'}
           singleTitle='article'
           getAll={getAllArticles}
@@ -36,9 +30,9 @@ var article = (
         />
 )
 
-var customer = (
+const CUSTOMER = (
   <Items
-          columns={Customer.columns}
+          columns={Customer.getColumns}
           title={'Customers'}
           singleTitle='customer'
           getAll={getAllCustomers}
@@ -46,9 +40,9 @@ var customer = (
         />
 )
 
-var provider = (
+const PROVIDER = (
   <Items
-          columns={Provider.columns}
+          columns={Provider.getColumns}
           title={'Providers'}
           singleTitle='provider'
           getAll={getAllProviders}
@@ -56,9 +50,9 @@ var provider = (
         />
 )
 
-var orders = (
+const ORDERS = (
   <Items
-          columns={Order.columns}
+          columns={Order.getColumns}
           title={'Orders'}
           singleTitle='order'
           getAll={getAllOrders}
@@ -70,23 +64,23 @@ function App() {
   return (
     <Routes>
 
-      <Route path="/" element={<Building />} />
+      <Route path="/" element={<WelcomeView />} />
 
-      <Route path={"/articles"} element={article}/>
-      <Route path={"/articles/:id"} element={article}/>
+      <Route path={"/articles"} element={ARTICLE}/>
+      <Route path={"/articles/:id"} element={ARTICLE}/>
 
-      <Route path="/customers" element={customer}/>
-      <Route path="/customers/:id" element={customer}/>
+      <Route path="/customers" element={CUSTOMER}/>
+      <Route path="/customers/:id" element={CUSTOMER}/>
 
-      <Route path="/providers" element={provider}/>
-      <Route path="/providers/:id" element={provider}/>
+      <Route path="/providers" element={PROVIDER}/>
+      <Route path="/providers/:id" element={PROVIDER}/>
 
-      <Route path="/orders" element={orders}/>
-      <Route path="/orders/:id" element={orders}/>
+      <Route path="/orders" element={ORDERS}/>
+      <Route path="/orders/:id" element={ORDERS}/>
 
       <Route path="/countries" element={
         <Items
-          columns={Country.columns}
+          columns={Country.getColumns}
           title={'Countries'}
           singleTitle='country'
           getAll={getAllCountries}

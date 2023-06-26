@@ -2,21 +2,42 @@ import axios from 'axios';
 import { Order } from '../classes/models/order';
 import api from './api.json';
 
-const api_endpoint = api.endpoint + 'orders/';
-
 export function getAllOrders(nb, page, customer_id) {
     if (customer_id === undefined) {
-        return axios.get(api_endpoint + `?nb=${nb}&page=${page}`)
+        return axios.get(api.endpoint + api.items.order + `?nb=${nb}&page=${page}`)
             .then(response => response.data.orders.filter(o => o.ID !== 0)
-                .map(order => new Order(order)))
+                .map(order => new Order(
+                    order.ID,
+                    order.YEAR,
+                    order.CUSTOMER_ID,
+                    order.ORDER_DATE,
+                    order.DELIVERY_DATE,
+                    order.CLOSING_DATE,
+                )))
     }
-    return axios.get(api_endpoint + `?nb=${nb}&customer=${customer_id}&page=${page}`)
-        .then(response => response.data.orders.filter(o => o.ID !== 0).map(order => new Order(order)))
+    return axios.get(api.endpoint + api.items.order + `?nb=${nb}&customer=${customer_id}&page=${page}`)
+        .then(response => response.data.orders.filter(o => o.ID !== 0)
+            .map(order => new Order(
+                order.ID,
+                order.YEAR,
+                order.CUSTOMER_ID,
+                order.ORDER_DATE,
+                order.DELIVERY_DATE,
+                order.CLOSING_DATE,
+            )))
 }
 
 export function getOrderById(id) {
-    return axios.get(api_endpoint + id)
-        .then(response => new Order(response.data.order));
+    return axios.get(api.endpoint + api.items.order + id)
+        .then(response => { return response.data.order }).then(order =>
+            new Order(
+                order.ID,
+                order.YEAR,
+                order.CUSTOMER_ID,
+                order.ORDER_DATE,
+                order.DELIVERY_DATE,
+                order.CLOSING_DATE,
+            ));
 }
 
 export async function updateOrder(order) {
@@ -24,7 +45,7 @@ export async function updateOrder(order) {
     order.id = parseInt(order.id);
     const newOrder = Order.toAPIFormat(order);
     try {
-        const response = axios.put(api_endpoint, newOrder);
+        const response = axios.put(api.endpoint + api.items.order, newOrder);
         return response;
     } catch (error) {
         if (error.response) {
@@ -35,12 +56,15 @@ export async function updateOrder(order) {
     }
 }
 
-export async function createOrder(order) {
-    order.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
+export async function createOrder(customerId) {
+    let order = new Order();
+    order.customerId = customerId;
+    order.date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    order.year = new Date().getFullYear();
     order.id = parseInt(await getMaxID()) + 1;
     const newOrder = Order.toAPIFormat(order);
     try {
-        const response = await axios.post(api_endpoint, newOrder);      
+        const response = await axios.post(api.endpoint + api.items.order, newOrder);
         return response;
     } catch (error) {
         if (error.response) {
@@ -52,17 +76,17 @@ export async function createOrder(order) {
 }
 
 export function deleteOrder(id) {
-    return axios.delete(api_endpoint + id)
+    return axios.delete(api.endpoint + api.items.order + id)
         .then(response => response);
 }
 
 export function getMaxID() {
-    return axios.get(api_endpoint + `max`)
+    return axios.get(api.endpoint + api.items.order + `max`)
         .then(response => response.data.max)
 }
 
 export function getLengthOrders() {
-    return axios.get(api_endpoint + `length`)
+    return axios.get(api.endpoint + api.items.order + `length`)
         .then(response => response.data.length)
 }
 
@@ -75,7 +99,7 @@ export function deliver(order) {
         const formattedDate = `${year}${month}${day}`;
         order.delivery_date = parseInt(formattedDate);
         updateOrder(order);
-    } catch(error) {
+    } catch (error) {
         return false;
     }
     return true;

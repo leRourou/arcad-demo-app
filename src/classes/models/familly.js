@@ -1,16 +1,16 @@
 export class Familly {
 
-    constructor(familly) {
-        this.id = familly.ID;
-        this.description = familly.DESCRIPTION;
-        this.vat_id = familly.VAT_ID;
-        this.creation_date = familly.CREATION_DATE;
-        this.last_modification = familly.LAST_MODIFICATION;
-        this.last_modifier_id = familly.LAST_MODIFIER_ID; 
-        this.deleted = familly.DELETED;
+    constructor(id, description, vat_id, creation_date, last_modification, last_modifier_id, deleted) {
+        this.id = id;
+        this.description = description;
+        this.vat_id = vat_id;
+        this.creation_date = creation_date;
+        this.last_modification = last_modification;
+        this.last_modifier_id = last_modifier_id;
+        this.deleted = deleted;
     }
 
-    static get columns() {
+    static getColumns() {
         return [
             { name: "id", type: "number", displayName: "ID", display: true },
             { name: "description", type: "string", displayName: "Description", display: true },
@@ -23,15 +23,7 @@ export class Familly {
     }
 
     static empty() {
-        return {
-            id: null,
-            description: null,
-            vat_id: null,
-            creation_date: null,
-            last_modification: null,
-            last_modifier_id: null,
-            deleted: null
-        }
+        return new Familly(0, "", "", "", "", "", "");
     }
 
 
@@ -49,11 +41,15 @@ export class Familly {
 
     static getErrors(article) {
         const errors = [];
-        if (!article.description) {
+        const { description } = article;
+
+        // Description
+        if (!description) {
             errors.push("Description is required");
         }
 
-        if (article.description.length > 50) {
+        // Description length
+        if (description.length > 50) {
             errors.push("Description must be less than 50 characters");
         }
 

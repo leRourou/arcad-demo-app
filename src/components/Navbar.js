@@ -10,7 +10,7 @@ export default function NavBar(props) {
     return (
         <div className="navbar">
             <div className="navbar-item">
-                <p>ARCAD Demo App</p>
+                <p>AROCO - Sample App</p>
             </div>
             {
                 items.map((item, index) => {

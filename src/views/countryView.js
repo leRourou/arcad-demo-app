@@ -6,18 +6,16 @@ import { TextField } from '../components/formField.js';
 import { toast } from 'react-toastify';
 import { Country } from "../classes/models/country.js";
 
-import { getCountryById, updateCountry,  } from '../services/countryServices'
+import { getCountryById, updateCountry, } from '../services/countryServices'
 
 export default function CountryView(props) {
 
     document.title = "Edit country";
     const { removeModal, type, itemId } = props;
 
-    // Data state
     const [country, setCountry] = useState({});
     const [loading, setLoading] = useState(true);
 
-    // Get country
     const getData = useCallback(async () => {
         setCountry(await getCountryById(itemId));
         setLoading(false);
@@ -56,61 +54,42 @@ export default function CountryView(props) {
 
 
     return (
-        <Modal>
-            <div
-                id="black-back"
-                onClick={() => {
-                    removeModal(false);
-                }}
-            />
+        <Modal closeModal={() => removeModal(false)}>
 
-            <div id="modify-view">
                 {
                     loading ? <Loading /> :
                         <>
 
-                            <h1 id="section-title">{type === "adding" ? "Add a country" : "Country " + country.id} </h1>
+                            <h1 id="section-title">{type === "adding" ? "Add a country" : "Country " + country.id} <img src={`https://flagsapi.com/${country.id}/flat/32.png`}></img></h1>
 
-                                <div className="field-line">
+                            <div className="field-line">
                                 <TextField
-                                    for="name"
-                                    label="Name"
-                                    value={country.name}
+                                    for="name" label="Name" value={country.name}
                                     tooltip={<>The name of the country. <br></br> Can't be empty</>}
-                                    onChange={(e) => {
-                                        setCountry(prevState => ({
-                                            ...prevState,
-                                            name: e.target.value
-                                        }))
+                                    onChange={(e) => {setCountry(prevState => ({...prevState, name: e.target.value}))
                                     }}
                                 />
                                 <TextField
-                                    for="iso_code"
-                                    label="ISO Code"
-                                    value={country.iso_code}
+                                    for="iso_code" label="ISO Code" value={country.iso_code}
                                     tooltip={<>The ISO Code of the country. <br></br> Must be 3 characters long</>}
                                     onChange={(e) => {
-                                        setCountry(prevState => ({
-                                            ...prevState,
-                                            iso_code: e.target.value
-                                        }))
+                                        setCountry(prevState => ({...prevState, iso_code: e.target.value}))
                                     }}
                                 />
                             </div>
 
                             <div className="modify-buttons-list">
                                 <button className="modify-button save-button" onClick={() => {
-                                    
-                                        if (window.confirm("Are you sure you want to save changes ?")) {
-                                            modifyCountry()
-                                        }
-                                    
+
+                                    if (window.confirm("Are you sure you want to save changes ?")) {
+                                        modifyCountry()
+                                    }
+
                                 }}>{"Save changes"}</button>
 
                             </div>
                         </>
                 }
-            </div>
         </Modal>
     );
 }

@@ -12,12 +12,9 @@ import { animated } from "@react-spring/web";
 import { getCustomerById, updateCustomer, createCustomer } from '../services/customerServices.js'
 import { getAllCountries } from "../services/countryServices.js";
 import { getAllOrders } from "../services/orderServices.js";
-/**
- * Customer view
- * @category Views
- * @param {props} props
- * @returns The JSX code for the customer view
- */
+import { createOrder } from "../services/orderServices.js";
+import Section from "../components/section";
+
 export default function CustomerView(props) {
 
     const { removeModal, type, itemId } = props;
@@ -38,21 +35,21 @@ export default function CustomerView(props) {
         leave: { maxHeight: 0 }
     }
 
+    function closeAll() {
+        setOpenInfos(false);
+        setOpenOrders(false);
+    }
+
     document.title = "Edit customer"
 
-    //const transitionInformations = useTransition(openInformations, transition);
-    const transitionOrders = useTransition(openOrders, transition);
-    const transitionEdit = useTransition(openInfos, transition);
-
-    // Get customer
     const getData = useCallback(async () => {
-        // Get countries
         setCountries(await getAllCountries(500, "", 1));
-        setOrders(await getAllOrders(100, 1, itemId));
         if (type === "adding") {
-            setCustomer(Customer.empty());
+            setCustomer(Customer.getEmpty());
             setLoading(false);
             return;
+        } else {
+            setOrders(await getAllOrders(100, 1, itemId));
         }
         setCustomer(await getCustomerById(itemId));
         setLoading(false);
@@ -66,7 +63,22 @@ export default function CustomerView(props) {
         fetchData();
     }, [getData]);
 
-    // Add customer
+    async function addOrder() {
+        if (!window.confirm("Are you sure you want to add an order for this customer?")) {
+            return;
+        }
+        createOrder(customer.id).then(
+            (response) => {
+                if (response.status === 201) {
+                    getData();
+                    toast("Order added successfully", { type: "success" })
+                } else {
+                    toast("An error occured while adding the order", { type: "error" })
+                }
+            }
+        )
+    }
+
     async function addCustomer() {
         var nCustomer = customer;
         nCustomer.creation_date = new Date().toISOString().slice(0, 10); // Format : YYYY-MM-DD
@@ -82,7 +94,7 @@ export default function CustomerView(props) {
             (response) => {
                 if (response.status === 201) {
                     toast("Customer added successfully", { type: "success" })
-                    removeModal(true);
+
                 } else {
                     toast("An error occured while adding the customer", { type: "error" })
                 }
@@ -90,7 +102,6 @@ export default function CustomerView(props) {
         )
     }
 
-    // Modify customer
     async function modifyCustomer() {
         var nCustomer = customer;
         nCustomer.id = customer.id;
@@ -107,6 +118,7 @@ export default function CustomerView(props) {
                 if (response.status === 204) {
                     modified = true;
                     toast("Customer updated successfully", { type: "success" })
+
                 } else {
                     toast("An error occured while updating the customer", { type: "error" })
                 }
@@ -114,232 +126,157 @@ export default function CustomerView(props) {
         )
     }
 
+    function displayOrders() {
+        return (
+            <>
+                <table style={{ marginTop: "10px" }}>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Closing date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map((order) => {
+                            return (
+                                <tr onClick={() => window.location.pathname = "orders/" + order.id}>
+                                    <td key={order.id}>{order.id}</td>
+                                    <td key={order.date}>{formatDate(order.date.toString())}</td>
+                                    <td key={order.closing_date}>{order.closing_date !== 0 ? formatDate(order.closing_date.toString()) : <i>No closing date</i>}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </>)
+    }
+
     return (
-        <Modal>
-            <div
-                id="black-back"
-                onClick={() => {
-                    removeModal(modified);
-                }}
-            />
+        <Modal closeModal={() => removeModal(modified)}>
+            {
+                loading ? <Loading /> :
+                    <>
 
-            <div id="modify-view">
-                {
-                    loading ? <Loading /> :
-                        <>
-                            <h1 id="section-title">{type === "adding" ? "Add a customer" : "Customer n°" + customer.id} </h1>
+                        <h1 id="section-title">{type === "adding" ? "Add a customer" : "Customer n°" + customer.id} </h1>
 
-                            {type !== "adding" &&
-                                <h2 onClick={() => { setOpenInfos(!openInfos); setOpenOrders(false) }} className="subtitle-itemview">Informations  {openInfos ? "⯆" : "⯈"}</h2>
-                            }
-
-                            <div style={{ overflow: 'hidden' }}>
-                                {transitionEdit((style, item) => item && (
-                                    <animated.div style={style}>
-                                        <div className="field-line">
-                                            <TextField
-                                                for="name"
-                                                label="Name"
-                                                value={customer.name}
-                                                tooltip={<>Name of the customer. <br></br> Can't be empty</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        name: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                            <TextField
-                                                for="phone"
-                                                label="Phone"
-                                                value={customer.phone}
-                                                tooltip={<>Phone number <br></br>Must be less than 15 characters long</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        phone: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                            <TextField
-                                                for="mail"
-                                                label="Mail"
-                                                value={customer.mail}
-                                                tooltip={<>Email <br></br>Must be in the good email format</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        mail: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className="field-line">
-                                            <TextField
-                                                for="address"
-                                                label="Address"
-                                                value={customer.address}
-                                                tooltip={<>Address (street number and street name) of the customer<br></br>Must be less than 50 characters long</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        address: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className="field-line">
-                                            <TextField
-                                                for="zip"
-                                                label="ZIP Code"
-                                                value={customer.zipCode}
-                                                tooltip={<>ZIP Code of the customer's address<br></br>Must be less than 9 characters long</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        zipCode: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                            <TextField
-                                                for="city"
-                                                label="City"
-                                                value={customer.city}
-                                                tooltip={<>City of the customer's address<br></br>Must be less than 10 characters long</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        city: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                            <SelectField
-                                                for="country"
-                                                label="Country"
-                                                value={customer.country_id}
-                                                options={countries.map((country) => {
-                                                    return {
-                                                        value: country.name,
-                                                        id: country.id
-                                                    }
-                                                })
-                                                }
-                                                tooltip={<>Country of the customer's address<br></br>To modify a country, go to the <Link className="link" to='/countries'>countries</Link> page</>}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        country_id: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className="field-line">
-                                            <NumberField
-                                                for="credit"
-                                                label="Credit"
-                                                value={customer.credit}
-                                                tooltip={<>The actual credit of the customer<br></br>Must be a positive number with two decimals</>}
-                                                min="0"
-                                                step="0.01"
-                                                max="9999999"
-                                                regex={/\d+\.\d{2}/}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        credit: e.target.value
-                                                    }))
-                                                }}
-                                            />
-
-                                            <NumberField
-                                                for="credit_limit"
-                                                label="Credit limit"
-                                                value={customer.credit_limit}
-                                                tooltip={<>The credit limit of the customer<br></br>Must be a positive number with two decimals</>}
-                                                min="0"
-                                                step="0.01"
-                                                max="9999999"
-                                                regex={/\d+\.\d{2}/}
-                                                onChange={(e) => {
-                                                    setCustomer(prevState => ({
-                                                        ...prevState,
-                                                        credit_limit: e.target.value
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-                                    </animated.div>
-                                ))}
+                        <Section title="Informations" isOpen={openInfos} setIsOpen={setOpenInfos} closeAll={() => closeAll()}>
+                            <div className="field-line">
+                                <TextField
+                                    for="name" label="Name" value={customer.name}
+                                    tooltip={<>Name of the customer. <br></br> Can't be empty</>}
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, name: e.target.value }))
+                                    }}
+                                />
+                                <TextField
+                                    for="phone" label="Phone" value={customer.phone}
+                                    tooltip={<>Phone number <br></br>Must be less than 15 characters long</>}
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, phone: e.target.value }))
+                                    }}
+                                />
                             </div>
 
+                            <div className="field-line">
+                                <TextField
+                                    for="address" label="Address" value={customer.address}
+                                    tooltip={<>Address (street number and street name) of the customer<br></br>Must be less than 50 characters long</>}
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, address: e.target.value }))
+                                    }}
+                                />
+                            </div>
 
-                            {type !== "adding" &&
-                                <>
-                                    <h2 onClick={() => { setOpenOrders(!openOrders); setOpenInfos(false) }} className="subtitle-itemview">Orders  {openOrders ? "⯆" : "⯈"}</h2>
-                                    <div style={{ overflow: 'hidden' }}>
-                                    {transitionOrders((style, item) => item && (
-                                        <animated.div style={style}>
+                            <div className="field-line">
+                                <TextField
+                                    for="zip" label="ZIP Code" value={customer.zipCode}
+                                    tooltip={<>ZIP Code of the customer's address<br></br>Must be less than 9 characters long</>}
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, zipCode: e.target.value }))
+                                    }}
+                                />
+                                <TextField
+                                    for="city" label="City" value={customer.city}
+                                    tooltip={<>City of the customer's address<br></br>Must be less than 10 characters long</>}
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, city: e.target.value }))
+                                    }}
+                                />
+                                <SelectField
+                                    for="country" label="Country" value={customer.country_id}
+                                    options={countries.map((country) => {
+                                        return { value: country.name, id: country.id }
+                                    })}
+                                    tooltip={<>Country of the customer's address<br></br>To modify a country, go to the <Link className="link" to='/countries'>countries</Link> page</>}
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, country_id: e.target.value }))
+                                    }}
+                                />
+                            </div>
+
+                            <div className="field-line">
+                                <NumberField
+                                    for="credit" label="Credit" value={customer.credit}
+                                    tooltip={<>The actual credit of the customer<br></br>Must be a positive number with two decimals</>}
+                                    min="0"
+                                    step="0.01"
+                                    max="9999999"
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, credit: e.target.value }))
+                                    }}
+                                />
+                                {<NumberField
+                                    for="credit_limit" label="Credit limit" value={customer.credit_limit}
+                                    tooltip={<>The credit limit of the customer<br></br>Must be a positive number with two decimals</>}
+                                    min="0"
+                                    step="0.01"
+                                    max="9999999"
+                                    onChange={(e) => {
+                                        setCustomer(prevState => ({ ...prevState, credit_limit: e.target.value }))
+                                    }}
+                                />}
+                            </div>
+                        </Section>
+
+
+                        {type !== "adding" &&
+                            <>
+                                <Section title="Orders" isOpen={openOrders} setIsOpen={setOpenOrders} closeAll={() => closeAll()}>
                                             {orders.length === 0 ?
                                                 <p className="no-orders">No orders</p> :
-                                                <>
-
-                                                    <table style={{marginTop:"10px"}}>
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th>Date</th>
-                                                                <th>Closing date</th>
-                                                            </tr>
-                                                        </thead>
-                                                    <tbody>
-                                                        {orders.map((order) => {
-                                                            return (
-                                                                <tr onClick={() => window.location.pathname = "orders/" + order.id}>
-                                                                    <td key={order.id}>{order.id}</td>
-                                                                    <td key={order.date}>{formatDate(order.date.toString())}</td>
-                                                                    <td key={order.closing_date}>{formatDate(order.closing_date.toString())}</td>
-                                                                </tr>
-                                                            )
-                                                        })}
-                                                    </tbody>
-                                                    </table>
+                                                displayOrders()}
+                                            <div className="modify-buttons-list">
+                                                <button className="modify-button save-button" onClick={() => { addOrder() }}>Add an order</button>
+                                            </div>
+                                        </Section>
+                            </>
+                        }
 
 
-                                                </>}
-                                        </animated.div>
-                                    ))} </div></>
-                            }
-                            
-
-                            <div className="modify-buttons-list">
-
-                                <button className="modify-button save-button" onClick={() => {
-                                    if (type === "adding") {
-                                        if (window.confirm("Are you sure you want to add this customer ?")) {
-                                            addCustomer()
-                                        }
-                                    } else {
-                                        if (window.confirm("Are you sure you want to save changes ?")) {
-                                            modifyCustomer()
-                                        }
+                        <div className="modify-buttons-list">
+                            <button className="modify-button save-button" onClick={() => {
+                                if (type === "adding") {
+                                    if (window.confirm("Are you sure you want to add this customer ?")) {
+                                        addCustomer()
                                     }
-                                }}>{type === "adding" ? "Add customer" : "Save changes"}</button>
-
-                                {type === "adding" &&
-                                    <button className="modify-button cancel-button" onClick={() => {
-                                        if (window.confirm("Are you sure you want to cancel ?")) {
-                                            removeModal(false)
-                                        }
-                                    }}>Cancel</button>
+                                } else {
+                                    if (window.confirm("Are you sure you want to save changes ?")) {
+                                        modifyCustomer()
+                                    }
                                 }
+                            }}>{type === "adding" ? "Add customer" : "Save changes"}</button>
 
-                            </div>
-                        </>
-                }
-            </div>
+                            {type === "adding" &&
+                                <button className="modify-button cancel-button" onClick={() => {
+                                    if (window.confirm("Are you sure you want to cancel ?")) {
+                                        removeModal(false)
+                                    }
+                                }}>Cancel</button>
+                            }
+                        </div>
+                    </>
+            }
         </Modal>
     );
 }

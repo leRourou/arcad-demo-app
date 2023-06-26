@@ -1,10 +1,13 @@
 import React from "react";
-import '../style/modal.scss';
+import "../style/modal.scss";
 
-export default function Modal({children}) {
-    return ( 
-    <div id='modify-container'>
-        {children}
+
+// Modal component to display a popup, closed when clicking on the black background
+export default function Modal({ children, closeModal }) {
+  return (
+    <div id="modify-container">
+      <div id="black-back" onClick={closeModal} />
+      <div id="modify-view">{children}</div>
     </div>
-    )
+  );
 }

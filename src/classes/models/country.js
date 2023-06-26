@@ -1,12 +1,12 @@
 export class Country {
 
-    constructor(country) {
-        this.id = country.ID;
-        this.name = country.NAME;
-        this.iso_code = country.ISO_CODE;
+    constructor(id, name, iso_code) {
+        this.id = id;
+        this.name = name;
+        this.iso_code = iso_code;
     }
 
-    static get columns() {
+    static getColumns() {
         return [
             { name: "id", type: "number", displayName: "ID", display: true },
             { name: "name", type: "string", displayName: "Name", display: true },
@@ -14,25 +14,28 @@ export class Country {
         ]
     }
 
-    static empty() {
-        return {
-            id: 0,
-            name: "",
-            iso_code: ""
-        }
+    static getEmpty() {
+        return new Country(0, "", "");
     }
 
     static getErrors(country) {
         const errors = [];
-        if (!country.name) {
+        const { name, iso_code } = country;
+
+        // Name
+        if (!name) {
             errors.push("The name is required.");
+        } else if (country.name.length > 30) {
+            errors.push("The name must be less than 30 characters long.");
         }
-        if (!country.iso_code) {
+        
+        // ISO code
+        if (!iso_code) {
             errors.push("The ISO code is required.");
-        }
-        if (country.iso_code.length !== 3) {
+        } else if (country.iso_code.length !== 3) {
             errors.push("The ISO code must be 3 characters long.");
         }
+        
         return errors;
     }
 
